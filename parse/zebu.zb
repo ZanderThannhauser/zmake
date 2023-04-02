@@ -1,0 +1,15 @@
+
+%skip: [' ']+;
+
+`string`: ['a'-'z','0'-'9']+;
+
+command: '\t' (`string` #args[])+ '\n';
+
+commands: (command #commands[])+;
+
+recipe: `string` #target ':' (`string` #depenencies[])* '\n' (commands #commands)?;
+
+root: '\n'* (recipe #recipes[] '\n'*)+;
+
+%start: root #root;
+
