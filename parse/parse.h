@@ -1,6 +1,7 @@
 
 struct recipeset;
 
-struct recipeset* parse(
-	int dirfd,
+void parse(
+	struct recipeset* all_recipes,
+	struct dirfd* dirfd,
 	const char* path);

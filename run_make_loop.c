@@ -1,11 +1,23 @@
 
+#include <stdlib.h>
+#include <assert.h>
 #include <math.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <linux/wait.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include <debug.h>
+
+#include <defines/argv0.h>
+
+#include <enums/error.h>
+
+#include <memory/srealloc.h>
 
 #include <cmdln/options/jobs.h>
 #include <cmdln/options/dry_run.h>
@@ -14,6 +26,8 @@
 #include <database/add_test_result.h>
 
 #include <recipe/struct.h>
+
+#include <dirfd/struct.h>
 
 #include <recipeset/foreach.h>
 /*#include <recipeset/is_empty.h>*/
@@ -57,7 +71,7 @@ static bool recipe_should_be_run(
 	
 	dpv(mtime);
 	
-	if (mtime < database->header.too_old)
+	if (mtime <= database->header.too_old)
 		return true;
 	
 	bool any = recipeset_any(recipe->dep_on, ({
@@ -75,7 +89,6 @@ static bool recipe_should_be_run(
 }
 
 void run_make_loop(
-	int dirfd,
 	struct recipeset* all_recipes,
 	struct heap* ready,
 	struct database* database)
@@ -150,7 +163,7 @@ void run_make_loop(
 					else if (WIFEXITED(info.si_status) && !WEXITSTATUS(info.si_status))
 					{
 						if (!cmdln_dry_run)
-							database_add_test_result(database, recipe->target, true);
+							database_add_test_result(database, recipe->target, recipe->dirfd, true);
 						
 						recipeset_foreach(recipe->dep_of, ({
 							void callback(struct recipe* dep)
@@ -167,7 +180,7 @@ void run_make_loop(
 					{
 						fprintf(stderr, "%s: subcommand failed, shutting down...\n", argv0);
 						
-						database_add_test_result(database, recipe->target, false);
+						database_add_test_result(database, recipe->target, recipe->dirfd, false);
 						
 						shutdown = true;
 					}
@@ -184,7 +197,7 @@ void run_make_loop(
 		{
 			struct recipe* recipe = heap_pop(ready);
 			
-			if (recipe_should_be_run(dirfd, database, recipe))
+			if (recipe_should_be_run(recipe->dirfd->fd, database, recipe))
 			{
 				pid_t pid;
 				
@@ -217,7 +230,7 @@ void run_make_loop(
 						
 						struct rgb color = {128, 128, 128};
 						
-						if (recipe->scores.real > 0)
+						if (recipe->scores.real >= 0)
 							color = hsv_to_rgb((recipe->scores.real * 2 * M_PI) / 3, 0.9, 1);
 						
 						for (unsigned i = 0, n = recipe->commands->commands.n; i < n; i++)
@@ -255,7 +268,7 @@ void run_make_loop(
 								}
 								else if (!child)
 								{
-									if (fchdir(dirfd) < 0)
+									if (fchdir(recipe->dirfd->fd) < 0)
 									{
 										fprintf(stderr, "%s: fchdir(): %m\n", argv0),
 										exit(e_syscall_failed);
@@ -273,7 +286,9 @@ void run_make_loop(
 								}
 								else if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus))
 								{
-									fprintf(stderr, "%s: subprocess did not exit happy\n", argv0);
+									fprintf(stderr, "%s: error "
+										"while attempting to build "
+										"target '%s'\n", argv0, recipe->target);
 									exit(e_syscall_failed);
 								}
 							}
@@ -323,12 +338,31 @@ void run_make_loop(
 	{
 		printf("%s: waiting for subprocesses to finish...\n", argv0);
 		
-		TODO;
-		// for pid in running:
-			// if waitpid(pid) < 0:
-				// database.append_score(task, failure);
-			// else:
-				// database.append_score(task, succesful);
+		for (int fd = 0; fd < FD_SETSIZE; fd++)
+		{
+			if (FD_ISSET(fd, &running.set))
+			{
+				struct recipe* recipe = fd_to_recipe[fd];
+				
+				siginfo_t info;
+				
+				if (waitid(P_PIDFD, fd, &info, WEXITED) < 0)
+				{
+					fprintf(stderr, "%s: waitid(): %m\n", argv0);
+					TODO;
+				}
+				else if (WIFEXITED(info.si_status) && !WEXITSTATUS(info.si_status))
+				{
+					database_add_test_result(database, recipe->target, recipe->dirfd, true);
+				}
+				else
+				{
+					database_add_test_result(database, recipe->target, recipe->dirfd, false);
+				}
+				
+				close(fd);
+			}
+		}
 	}
 
 	EXIT;

@@ -1,9 +1,12 @@
 
+#include <stdbool.h>
+
 struct zebu_commands;
 
 struct recipe
 {
 	char* target; // must be the first
+	struct dirfd* dirfd;
 	
 	struct recipeset* dep_on; // I am dependant on these
 	struct recipeset* dep_of; // these are dependant on me
@@ -17,7 +20,7 @@ struct recipe
 	struct {
 		unsigned total, count;
 		
-		long double real, effective;
+		double real, effective;
 	} scores;
 	
 	struct {

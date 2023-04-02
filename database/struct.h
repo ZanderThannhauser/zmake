@@ -1,4 +1,9 @@
 
+#include <stdbool.h>
+#include <limits.h>
+#include <time.h>
+#include <sys/types.h>
+
 struct database
 {
 	struct database_header {
@@ -12,6 +17,8 @@ struct database
 struct database_record
 {
 	char name[PATH_MAX];
+	dev_t st_dev;
+	ino_t st_ino;
 	bool passed;
 	time_t timestamp;
 };

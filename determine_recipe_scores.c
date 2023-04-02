@@ -27,13 +27,13 @@ void determine_recipe_scores(
 		{
 			if (recipe->scores.count)
 			{
-				long double score = (long double) recipe->scores.total / recipe->scores.count;
+				double score = (double) recipe->scores.total / recipe->scores.count;
 				
 				recipe->scores.real = score;
 				recipe->scores.effective = score;
+				
+				dpv(recipe->scores.effective);
 			}
-			
-			dpv(recipe->scores.real);
 			
 			heap_push(ready, recipe);
 		}

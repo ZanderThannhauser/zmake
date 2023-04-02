@@ -5,27 +5,34 @@
 
 #include <cmdln/process.h>
 #include <cmdln/usage.h>
-#include <cmdln/options/directory.h>
 #include <cmdln/options/help.h>
-#include <cmdln/options/makefile.h>
+#include <cmdln/options/makefiles.h>
 #include <cmdln/options/print_dependency_tree.h>
-#include <cmdln/free.h>
+
+#include <recipeset/new.h>
+
+#include <recipe/compare_scores.h>
+#include <heap/new.h>
+
+#include <dirfd/new.h>
+#include <dirfd/free.h>
 
 #include <parse/parse.h>
 
+#include <recipeset/lookup.h>
+#include <heap/push.h>
+
 #include <print_dependency_tree.h>
+
+#include <mark_recipes_for_execution.h>
 
 #include <check_for_circular_dependencies.h>
 
 #include <database/new.h>
 #include <database/cleanup.h>
 
-#include <recipe/compare_scores.h>
-#include <heap/new.h>
 
 #include <determine_recipe_scores.h>
-
-#include <mark_recipes_for_execution.h>
 
 #include <run_make_loop.h>
 
@@ -33,6 +40,7 @@
 
 #include <database/free.h>
 #include <recipeset/free.h>
+#include <cmdln/free.h>
 
 int main(int argc, char* const* argv)
 {
@@ -46,47 +54,63 @@ int main(int argc, char* const* argv)
 	}
 	else
 	{
-		int dirfd = AT_FDCWD;
+		struct recipeset* all_recipes = new_recipeset(true);
 		
-		if (cmdln_directory && (dirfd = open(cmdln_directory, O_PATH)) < 0)
+		struct heap* ready = new_heap(compare_recipe_scores);
+		
+		for (int i = 0, n = cmdln_makefiles.n; i < n; i++)
 		{
-			fprintf(stderr, "%s: error on chdir(\"%s\"): %m\n", argv0, cmdln_directory);
-			exit(e_syscall_failed);
+			struct cmdln_makefile_bundle* bundle = &cmdln_makefiles.data[i];
+			
+			struct dirfd* dirfd = new_dirfd(bundle->chdir);
+			
+			dpv(dirfd);
+			
+			for (int j = 0, m = bundle->makefiles.n; j < m; j++)
+			{
+				const char* makefile = bundle->makefiles.data[j];
+				
+				parse(all_recipes, dirfd, makefile);
+			}
+			
+			for (int j = 0, m = bundle->targets.n; j < m; j++)
+			{
+				const char* target = bundle->targets.data[j];
+				
+				dpvs(target);
+				
+				struct recipe* recipe = recipeset_lookup(all_recipes, target, dirfd);
+				
+				heap_push(ready, recipe);
+			}
+			
+			free_dirfd(dirfd);
 		}
 		
-		dpv(dirfd);
+		mark_recipes_for_execution(ready);
 		
-		struct recipeset* all_recipes = parse(dirfd, cmdln_makefile ?: "makefile");
+		struct database* database = new_database();
+		
+		database_cleanup(database);
+		
+		determine_recipe_scores(all_recipes, ready, database);
 		
 		if (cmdln_print_dependency_tree)
 		{
-			print_dependency_tree(dirfd, all_recipes);
+			print_dependency_tree(all_recipes);
 		}
 		else
 		{
 			check_for_circular_dependencies(all_recipes);
 			
-			struct database* database = new_database(dirfd);
-			
-			database_cleanup(database);
-			
-			struct heap* ready = new_heap(compare_recipe_scores);
-			
-			determine_recipe_scores(all_recipes, ready, database);
-			
-			mark_recipes_for_execution(all_recipes, ready);
-			
-			run_make_loop(dirfd, all_recipes, ready, database);
-			
-			free_heap(ready);
-			
-			free_database(database);
+			run_make_loop(all_recipes, ready, database);
 		}
+		
+		free_database(database);
 		
 		free_recipeset(all_recipes);
 		
-		if (dirfd > 0)
-			close(dirfd);
+		free_heap(ready);
 	}
 	
 	cmdln_free();

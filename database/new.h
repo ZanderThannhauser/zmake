@@ -1,3 +1,2 @@
 
-struct database* new_database(
-	int dirfd);
+struct database* new_database();

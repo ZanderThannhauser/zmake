@@ -7,11 +7,14 @@
 
 #include <recipeset/new.h>
 
+#include <dirfd/inc.h>
+
 #include "struct.h"
 #include "new.h"
 
 struct recipe* new_recipe(
 	char* target,
+	struct dirfd* dirfd,
 	struct zebu_commands* commands)
 {
 	ENTER;
@@ -19,10 +22,11 @@ struct recipe* new_recipe(
 	struct recipe* this = smalloc(sizeof(*this));
 	
 	this->target = target;
+	this->dirfd = inc_dirfd(dirfd);
 	
 	this->commands = inc_zebu_commands(commands);
 	
-	this->dep_on = new_recipeset(true);
+	this->dep_on = new_recipeset(false);
 	this->dep_of = new_recipeset(false);
 	
 	this->circular.checked = false;

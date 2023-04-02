@@ -3,6 +3,7 @@ CPPFLAGS += -D _GNU_SOURCE
 CPPFLAGS += -I .
 
 CFLAGS += -Wall -Werror -Wfatal-errors
+CFLAGS += -Wno-unused-result
 
 LDLIBS += -lm
 
@@ -55,18 +56,18 @@ default: $(buildprefix)/zmake
 
 ARGS += --verbose
 #ARGS += --dry-run
-#ARGS += --print-dependency-tree
+ARGS += --print-dependency-tree
 #ARGS += --always-make
 
-ARGS += --jobs 1
+#ARGS += --jobs 1
 #ARGS += --jobs 2
-#ARGS += --jobs 10
+ARGS += --jobs 10
 
 ARGS += -C examples/sandbox
 #ARGS += -C examples/sandbox a b
 #ARGS += -C examples/sandbox c
 
-#ARGS += -C examples/sleep
+ARGS += -C examples/sleep
 #ARGS += -C examples/sleep 1
 
 run: $(buildprefix)/zmake

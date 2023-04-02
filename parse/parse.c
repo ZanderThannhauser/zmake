@@ -1,7 +1,11 @@
 
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <fcntl.h>
+
 #include <debug.h>
 
-#include <recipeset/new.h>
 #include <recipeset/add.h>
 
 #include <recipe/new.h>
@@ -10,19 +14,22 @@
 
 #include <recipeset/lookup.h>
 
+#include <dirfd/struct.h>
+
 #include "parse.h"
 #include "zebu.h"
 
-struct recipeset* parse(
-	int dirfd,
+void parse(
+	struct recipeset* all_recipes,
+	struct dirfd* dirfd,
 	const char* path)
 {
 	ENTER;
 	
-	dpv(dirfd);
+	dpv(dirfd->fd);
 	dpvs(path);
 	
-	int fd = openat(dirfd, path, O_RDONLY);
+	int fd = openat(dirfd->fd, path, O_RDONLY);
 	
 	if (fd < 0)
 	{
@@ -42,8 +49,6 @@ struct recipeset* parse(
 	
 	struct zebu_root* root = start->root;
 	
-	struct recipeset* all_recipes = new_recipeset(true);
-	
 	for (unsigned i = 0, n = root->recipes.n; i < n; i++)
 	{
 		struct zebu_recipe* zrecipe = root->recipes.data[i];
@@ -52,7 +57,7 @@ struct recipeset* parse(
 		
 		dpvs(target);
 		
-		struct recipe* recipe = new_recipe(target, zrecipe->commands);
+		struct recipe* recipe = new_recipe(target, dirfd, zrecipe->commands);
 		
 		recipeset_add(all_recipes, recipe);
 		
@@ -67,7 +72,7 @@ struct recipeset* parse(
 		
 		dpvs(target);
 		
-		struct recipe* recipe = recipeset_lookup(all_recipes, target);
+		struct recipe* recipe = recipeset_lookup(all_recipes, target, dirfd);
 		
 		assert(recipe);
 		
@@ -79,7 +84,7 @@ struct recipeset* parse(
 			
 			dpvs(depenency);
 			
-			struct recipe* dep_recipe = recipeset_lookup(all_recipes, depenency);
+			struct recipe* dep_recipe = recipeset_lookup(all_recipes, depenency, dirfd);
 			
 			if (!dep_recipe)
 			{
@@ -96,7 +101,6 @@ struct recipeset* parse(
 	fclose(stream);
 	
 	EXIT;
-	return all_recipes;
 }
 
 

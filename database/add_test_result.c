@@ -1,5 +1,12 @@
 
+#include <stdlib.h>
+#include <assert.h>
+#include <unistd.h>
+#include <string.h>
+
 #include <debug.h>
+
+#include <dirfd/struct.h>
 
 #include "struct.h"
 #include "add_test_result.h"
@@ -7,6 +14,7 @@
 void database_add_test_result(
 	struct database* this,
 	const char* target,
+	struct dirfd* dirfd,
 	bool passed)
 {
 	ENTER;
@@ -25,6 +33,8 @@ void database_add_test_result(
 	struct database_record record;
 	
 	strcpy(record.name, target);
+	record.st_dev = dirfd->st_dev;
+	record.st_ino = dirfd->st_ino;
 	record.passed = passed;
 	record.timestamp = now;
 	

@@ -1,4 +1,10 @@
 
+#include <stdlib.h>
+#include <assert.h>
+#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+
 #include <debug.h>
 
 #include <memory/smalloc.h>
@@ -8,14 +14,13 @@
 #include "struct.h"
 #include "new.h"
 
-struct database* new_database(
-	int dirfd)
+struct database* new_database()
 {
 	ENTER;
 	
 	struct database* this = smalloc(sizeof(*this));
 	
-	int fd = openat(dirfd, ".zmake.db", O_RDWR | O_CREAT, 0664);
+	int fd = open(".zmake.db", O_RDWR | O_CREAT, 0664);
 	
 	errno = 0;
 	

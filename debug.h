@@ -34,6 +34,8 @@
 	#include <memory/smalloc.h>
 	#include <memory/srealloc.h>
 	
+	struct dirfd;
+	
 	#ifdef DEBUGGING
 		extern int debug_depth;
 		
@@ -205,10 +207,20 @@
 		#define verprintf(format, ... ) ;
 		
 		#define ENTER
-		#define EXIT
 		#define HERE ;
+		#define EXIT
 	#endif
+#else
+	#define TODO assert(!"TODO");
+	#define CHECK assert(!"CHECK");
+	#define NOPE assert(!"NOPE");
 	
+	#define ENTER ;
+	#define EXIT ;
+	
+	#define dpvb(x) ;
+	#define dpv(x) ;
+	#define dpvs(x) ;
 #endif
 
 
