@@ -59,9 +59,9 @@ ARGS += --verbose
 ARGS += --print-dependency-tree
 #ARGS += --always-make
 
-#ARGS += --jobs 1
+ARGS += --jobs 1
 #ARGS += --jobs 2
-ARGS += --jobs 10
+#ARGS += --jobs 10
 
 ARGS += -C examples/sandbox
 #ARGS += -C examples/sandbox a b
@@ -69,6 +69,8 @@ ARGS += -C examples/sandbox
 
 ARGS += -C examples/sleep
 #ARGS += -C examples/sleep 1
+
+#ARGS += -f ./examples/zmake/makefile
 
 run: $(buildprefix)/zmake
 	$< $(ARGS)

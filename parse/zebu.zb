@@ -1,7 +1,7 @@
 
 %skip: [' ']+;
 
-`string`: ['a'-'z','0'-'9']+;
+`string`: ['a'-'z', '0'-'9', '/', '.']+;
 
 command: '\t' (`string` #args[])+ '\n';
 
