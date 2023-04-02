@@ -3,6 +3,7 @@ struct database
 {
 	struct database_header {
 		unsigned i, n, cap;
+		time_t too_old;
 	} header, original_header;
 	
 	int fd;

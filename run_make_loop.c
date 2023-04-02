@@ -10,6 +10,7 @@
 #include <cmdln/options/jobs.h>
 #include <cmdln/options/dry_run.h>
 
+#include <database/struct.h>
 #include <database/add_test_result.h>
 
 #include <recipe/struct.h>
@@ -46,6 +47,7 @@ static time_t get_mtime(int dirfd, const char* path)
 
 static bool recipe_should_be_run(
 	int dirfd,
+	struct database* database,
 	struct recipe* recipe)
 {
 	if (!file_exists(dirfd, recipe->target))
@@ -54,6 +56,9 @@ static bool recipe_should_be_run(
 	time_t mtime = get_mtime(dirfd, recipe->target);
 	
 	dpv(mtime);
+	
+	if (mtime < database->header.too_old)
+		return true;
 	
 	bool any = recipeset_any(recipe->dep_on, ({
 		bool callback(const struct recipe* dependency) {
@@ -179,7 +184,7 @@ void run_make_loop(
 		{
 			struct recipe* recipe = heap_pop(ready);
 			
-			if (recipe_should_be_run(dirfd, recipe))
+			if (recipe_should_be_run(dirfd, database, recipe))
 			{
 				pid_t pid;
 				

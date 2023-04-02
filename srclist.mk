@@ -20,6 +20,7 @@ srcs += ./avl/search_closest.c
 srcs += ./avl/unlink_node.c
 srcs += ./check_for_circular_dependencies.c
 srcs += ./cmdln/free.c
+srcs += ./cmdln/options/always_make.c
 srcs += ./cmdln/options/directory.c
 srcs += ./cmdln/options/dry_run.c
 srcs += ./cmdln/options/help.c

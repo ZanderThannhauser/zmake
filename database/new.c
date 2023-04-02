@@ -3,6 +3,8 @@
 
 #include <memory/smalloc.h>
 
+#include <cmdln/options/always_make.h>
+
 #include "struct.h"
 #include "new.h"
 
@@ -30,12 +32,11 @@ struct database* new_database(
 			this->header = (struct database_header) {0, 0, 0};
 		}
 	}
-	else
-	{
-		; // file opened normally; nothing to do
-	}
 	
 	this->original_header = this->header;
+	
+	if (cmdln_always_make)
+		this->header.too_old = time(NULL);
 	
 	this->fd = fd;
 	
