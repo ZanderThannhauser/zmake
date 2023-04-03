@@ -236,7 +236,7 @@ void run_make_loop(
 						
 						struct rgb color = {128, 128, 128};
 						
-						if (recipe->scores.real >= 0)
+						if (recipe->scores.real < M_INFINITY)
 							color = hsv_to_rgb((recipe->scores.real * 2 * M_PI) / 3, 0.9, 1);
 						
 						for (unsigned i = 0, n = recipe->commands->commands.n; i < n; i++)

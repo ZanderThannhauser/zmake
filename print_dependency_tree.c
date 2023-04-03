@@ -45,10 +45,10 @@ void print_dependency_tree(
 			
 			struct rgb effective_color = {128, 128, 128};
 			
-			if (recipe->scores.real >= 0)
+			if (recipe->scores.real < INFINITY)
 				real_color = hsv_to_rgb((recipe->scores.real * 2 * M_PI) / 3, 0.9, 1);
 			
-			if (recipe->scores.effective >= 0)
+			if (recipe->scores.effective < INFINITY)
 				effective_color = hsv_to_rgb((recipe->scores.effective * 2 * M_PI) / 3, 0.9, 1);
 			
 			fprintf(stream, ""

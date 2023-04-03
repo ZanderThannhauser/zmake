@@ -1,4 +1,6 @@
 
+#include <math.h>
+
 #include <debug.h>
 
 #include <recipeset/foreach.h>
@@ -25,15 +27,15 @@ void determine_recipe_scores(
 	recipeset_foreach(all_recipes, ({
 		void callback(struct recipe* recipe)
 		{
+			double score = INFINITY;
+			
 			if (recipe->scores.count)
-			{
-				double score = (double) recipe->scores.total / recipe->scores.count;
-				
-				recipe->scores.real = score;
-				recipe->scores.effective = score;
-				
-				dpv(recipe->scores.effective);
-			}
+				score = (double) recipe->scores.total / recipe->scores.count;
+			
+			recipe->scores.real = score;
+			recipe->scores.effective = score;
+			
+			dpv(recipe->scores.effective);
 			
 			heap_push(ready, recipe);
 		}

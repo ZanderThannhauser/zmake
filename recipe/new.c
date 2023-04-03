@@ -34,8 +34,6 @@ struct recipe* new_recipe(
 	
 	this->scores.total = 0;
 	this->scores.count = 0;
-	this->scores.real = -1;
-	this->scores.effective = -1;
 	
 	this->execution.round = 0;
 	
