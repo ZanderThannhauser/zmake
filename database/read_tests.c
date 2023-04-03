@@ -19,14 +19,14 @@ void database_read_tests(
 {
 	ENTER;
 	
-	struct database_record record;
-	
 	for (unsigned i = 0, n = this->header.n; i < n; i++)
 	{
+		struct database_record record = {};
+		
 		if (pread(this->fd, &record, sizeof(record), 0
 			+ sizeof(struct database_header)
 			+ sizeof(struct database_record)
-			* ((this->header.i + i) % this->header.cap)) < PATH_MAX)
+			* ((this->header.i + i) % this->header.cap)) < 0)
 		{
 			TODO;
 			exit(1);

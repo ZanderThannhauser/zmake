@@ -15,12 +15,12 @@ void database_cleanup(
 	
 	time_t get_timestamp()
 	{
-		time_t time;
+		time_t time = 0;
 		
 		if (pread(this->fd, &time, sizeof(time), 0
 			+ sizeof(struct database_header)
 			+ sizeof(struct database_record) * (this->header.i % this->header.cap)
-			+ offsetof(struct database_record, timestamp)) < sizeof(time))
+			+ offsetof(struct database_record, timestamp)) < 0)
 		{
 			TODO;
 			exit(1);
