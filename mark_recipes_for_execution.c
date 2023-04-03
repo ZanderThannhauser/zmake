@@ -16,6 +16,23 @@ void mark_recipes_for_execution(
 {
 	ENTER;
 	
+	// global round id, increments to invaildate previous execution markings
+	
+	
+		// mark_recipes_for_execution(recipes):
+			// global round = 0;
+			// round++;
+			// for recipe in recipes:
+				// recipe.execution = round;
+				// ready.add(recipe);
+			// while len(ready):
+				// recipe = ready.pop();
+				// recipe.execution = round;
+				// for dep in recipe.dep_on:
+					// ready.push(dep);
+		
+	TODO;
+	#if 0
 	while (heap_is_nonempty(ready))
 	{
 		struct recipe* recipe = heap_pop(ready);
@@ -33,6 +50,7 @@ void mark_recipes_for_execution(
 			}));
 		}
 	}
+	#endif
 	
 	EXIT;
 }

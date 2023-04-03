@@ -95,6 +95,12 @@ void run_make_loop(
 {
 	ENTER;
 	
+	// only consider a recipe as marked for execution, if it's round number
+		// is up-to-date
+	TODO;
+	
+	TODO;
+	#if 0
 	recipeset_foreach(all_recipes, ({
 		void callback(struct recipe* recipe)
 		{
@@ -364,7 +370,8 @@ void run_make_loop(
 			}
 		}
 	}
-
+	#endif
+	
 	EXIT;
 }
 

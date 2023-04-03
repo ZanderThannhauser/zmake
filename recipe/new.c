@@ -37,8 +37,7 @@ struct recipe* new_recipe(
 	this->scores.real = -1;
 	this->scores.effective = -1;
 	
-	this->execution.marked = false;
-	this->execution.waiting = 0;
+	this->execution.round = 0;
 	
 	this->refcount = 1;
 	

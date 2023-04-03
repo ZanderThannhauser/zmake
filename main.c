@@ -31,7 +31,6 @@
 #include <database/new.h>
 #include <database/cleanup.h>
 
-
 #include <determine_recipe_scores.h>
 
 #include <run_make_loop.h>
@@ -54,8 +53,20 @@ int main(int argc, char* const* argv)
 	}
 	else
 	{
-		struct recipeset* all_recipes = new_recipeset(true);
+		TODO;
+		#if 0
+		struct database* database = new_database();
 		
+		database_cleanup(database);
+		
+		determine_recipe_scores(all_recipes, ready, database);
+		#endif
+		
+		TODO;
+		// struct recipeset* all_recipes = new_recipeset(true);
+		
+		TODO;
+		#if 0
 		struct heap* ready = new_heap(compare_recipe_scores);
 		
 		for (int i = 0, n = cmdln_makefiles.n; i < n; i++)
@@ -64,13 +75,13 @@ int main(int argc, char* const* argv)
 			
 			struct dirfd* dirfd = new_dirfd(bundle->chdir);
 			
-			dpv(dirfd);
+			struct scope* scope = new_scope();
 			
 			for (int j = 0, m = bundle->makefiles.n; j < m; j++)
 			{
 				const char* makefile = bundle->makefiles.data[j];
 				
-				parse(all_recipes, dirfd, makefile);
+				parse(all_recipes, dirfd, scope, makefile);
 			}
 			
 			for (int j = 0, m = bundle->targets.n; j < m; j++)
@@ -84,17 +95,17 @@ int main(int argc, char* const* argv)
 				heap_push(ready, recipe);
 			}
 			
+			free_scope(scope);
+			
 			free_dirfd(dirfd);
 		}
+		#endif
 		
-		mark_recipes_for_execution(ready);
+		TODO;
+		// mark_recipes_for_execution(ready);
 		
-		struct database* database = new_database();
-		
-		database_cleanup(database);
-		
-		determine_recipe_scores(all_recipes, ready, database);
-		
+		TODO;
+		#if 0
 		if (cmdln_print_dependency_tree)
 		{
 			print_dependency_tree(all_recipes);
@@ -111,6 +122,7 @@ int main(int argc, char* const* argv)
 		free_recipeset(all_recipes);
 		
 		free_heap(ready);
+		#endif
 	}
 	
 	cmdln_free();

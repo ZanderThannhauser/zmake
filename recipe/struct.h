@@ -24,10 +24,27 @@ struct recipe
 	} scores;
 	
 	struct {
+		unsigned round;
 		bool marked;
 		unsigned waiting;
 	} execution;
 	
 	unsigned refcount;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

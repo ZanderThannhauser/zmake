@@ -45,6 +45,39 @@ void parse(
 		exit(1);
 	}
 	
+	// ready = new heap();
+	// newly_added_recipes = set();
+	// for grammar in zebu.parse():
+		// read recipes:
+			// substitute variables in target, depenencies and commands
+			// if target in all_recipes:
+				// check that it has no rules
+			// otherwise:
+				// create nwew
+				// add to all_recipes and newly_added_recipes
+			// any dependency that can't be found in all_recipes:
+				// create new
+		// variable assignments:
+			// reassign value in scope
+		// read includes:
+			// if included file has recipe:
+				// check_for_circular_dependencies(newly_added_recipes)
+				// determine_recipe_scores(newly_added_recipes)
+				// ready.push(included file)
+				// mark_recipes_for_execution(ready)
+				// run_make_loop(ready)
+			// elif included file does not exist:
+				// "error!"
+			// parse(scope, included file)
+			// newly_added_recipes.clear();
+	// if len(newly_added_recipes):
+		// check_for_circular_dependencies(newly_added_recipes)
+		// determine_recipe_scores(newly_added_recipes)
+	
+	// free heap(ready)
+	
+	TODO;
+	#if 0
 	struct zebu_$start* start = zebu_parse(stream);
 	
 	struct zebu_root* root = start->root;
@@ -97,6 +130,7 @@ void parse(
 	}
 	
 	free_zebu_$start(start);
+	#endif
 	
 	fclose(stream);
 	
