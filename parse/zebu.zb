@@ -1,15 +1,104 @@
 
-%skip: [' ']+;
+%skip: [' ', '\t']+;
 
-`string`: ['a'-'z', '0'-'9', '/', '.']+;
+`string`: '\"' [!'\"']* '\"' | '\'' [!'\'']* '\'';
 
-command: '\t' (`string` #args[])+ '\n';
+`identifier`: ['_', 'a'-'z'] ['a'-'z', '0'-'9']*;
+
+`text`: ['a'-'z', '0'-'9', '/', '.', '_', '-']+;
+
+`integer`: ['0'-'9']+;
+
+argument
+	: '(' expression #expression ')'
+	| `string` #string
+	| `text` #text
+	;
+
+simple_command: (argument #args[])+;
+
+command
+	: '$' simple_command #simples[]
+	( '<' argument #redirect_in)?
+	( '|' simple_command #simples[])*
+	( '>' argument #redirect_out)? '\n';
 
 commands: (command #commands[])+;
 
-recipe: `string` #target ':' (`string` #depenencies[])* '\n' (commands #commands)?;
+primary_expression
+	: '(' expression #inner ')'
+	| '[' #list (expression #elements[] (',' expression #elements[])*)? ']'
+	| `identifier` #variable
+	| `integer` #integer
+	| `string` #string
+	;
 
-root: '\n'* (recipe #recipes[] '\n'*)+;
+postfix_expression: primary_expression #inner;
+
+prefix_expression
+	: postfix_expression #inner
+	| '+' #pos prefix_expression #sub
+	| '-' #neg prefix_expression #sub
+	;
+
+multiplicative_expression
+	: prefix_expression #inner
+	| multiplicative_expression #left '*' #mul prefix_expression #right
+	| multiplicative_expression #left '/' #div prefix_expression #right
+	;
+
+additive_expression
+	: multiplicative_expression #inner
+	| additive_expression #left '+' #add multiplicative_expression #right
+	| additive_expression #left '-' #sub multiplicative_expression #right
+	;
+
+relational_expression
+	: additive_expression #inner
+	| relational_expression #left ">"  #gt  additive_expression #right
+	| relational_expression #left ">=" #gte additive_expression #right
+	| relational_expression #left "<"  #lt  additive_expression #right
+	| relational_expression #left "<=" #lte additive_expression #right
+	;
+
+equality_expression
+	: relational_expression #inner
+	| equality_expression #left "==" #eq relational_expression #right
+	| equality_expression #left "!=" #nq relational_expression #right
+	;
+
+expression: equality_expression #inner;
+
+recipe: argument #target ':' (argument #dependencies[])* '\n'? (commands #commands | '\n') '\n'*;
+
+assignment: `identifier` #variable ("=" #eq | "+=" #peq) expression #expression '\n'+;
+
+conditional: "if" expression ':' statement+ ("else" statement+)? "endif" '\n'+;
+
+iterative: "for" `identifier` #variable "in" expression #list ':' '\n' (statement #body[])+ "endfor" '\n'+;
+
+include: "include" argument #argument '\n'+;
+
+statement
+	: recipe #recipe
+	| assignment #assignment
+	| conditional #conditional
+	| iterative #iterative
+	| include #include
+	;
+
+root: '\n'* (statement #statements[])+;
 
 %start: root #root;
+
+
+
+
+
+
+
+
+
+
+
 

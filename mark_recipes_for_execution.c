@@ -1,56 +1,60 @@
 
 #include <debug.h>
 
+#include <heap/new.h>
 #include <heap/is_nonempty.h>
 #include <heap/pop.h>
 #include <heap/push.h>
+#include <heap/free.h>
 
 #include <recipeset/foreach.h>
+#include <recipeset/len.h>
 
 #include <recipe/struct.h>
+#include <recipe/compare_scores.h>
 
 #include "mark_recipes_for_execution.h"
 
+unsigned execution_round_id = 0;
+
 void mark_recipes_for_execution(
-	struct heap* ready)
+	struct recipeset* start)
 {
 	ENTER;
 	
-	// global round id, increments to invaildate previous execution markings
+	struct heap* ready = new_heap(compare_recipe_scores);
 	
+	recipeset_foreach(start, ({
+		void callback(struct recipe* recipe) {
+			heap_push(ready, recipe);
+		}
+		callback;
+	}));
 	
-		// mark_recipes_for_execution(recipes):
-			// global round = 0;
-			// round++;
-			// for recipe in recipes:
-				// recipe.execution = round;
-				// ready.add(recipe);
-			// while len(ready):
-				// recipe = ready.pop();
-				// recipe.execution = round;
-				// for dep in recipe.dep_on:
-					// ready.push(dep);
-		
-	TODO;
-	#if 0
+	execution_round_id++;
+	
 	while (heap_is_nonempty(ready))
 	{
 		struct recipe* recipe = heap_pop(ready);
 		
 		if (!recipe->execution.marked)
 		{
+			dpvs(recipe->target);
+			
 			recipe->execution.marked = true;
+			recipe->execution.round = execution_round_id;
+			recipe->execution.waiting = recipeset_len(recipe->dep_on);
 			
 			recipeset_foreach(recipe->dep_on, ({
-				void callback(struct recipe* dependency)
-				{
+				void callback(struct recipe* dependency) {
 					heap_push(ready, dependency);
 				}
 				callback;
 			}));
 		}
 	}
-	#endif
+	
+	free_heap(ready);
 	
 	EXIT;
 }

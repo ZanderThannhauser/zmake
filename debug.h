@@ -26,6 +26,7 @@
 	#include <linux/limits.h>
 	#include <time.h>
 	#include <limits.h>
+	#include <sys/param.h>
 	
 	#include <defines/argv0.h>
 
@@ -35,6 +36,17 @@
 	#include <memory/srealloc.h>
 	
 	struct dirfd;
+	struct scope;
+	struct recipeset;
+	struct zebu_target;
+	struct database;
+	struct recipe;
+	struct heap;
+	struct zebu_include;
+	struct zebu_argument;
+	struct zebu_statement;
+	struct simple_command;
+	struct command;
 	
 	#ifdef DEBUGGING
 		extern int debug_depth;
@@ -47,7 +59,7 @@
 			char buffer[100];\
 			sprintf(buffer, "+%i", __LINE__);\
 			execlp("gedit", "gedit", __FILE__, buffer, NULL);\
-			assert(0); \
+			abort(); \
 		}
 		
 		#define CHECK TODO
@@ -204,7 +216,8 @@
 		#define dpvc(x) ;
 		#define dpvo(x) ;
 		#define dpvsn(_, __) ;
-		#define verprintf(format, ... ) ;
+		#define ddprintf(format, ... ) ;
+		#define dpvc(x) ;
 		
 		#define ENTER
 		#define HERE ;
@@ -218,9 +231,11 @@
 	#define ENTER ;
 	#define EXIT ;
 	
+	#define ddprintf(...) ;
 	#define dpvb(x) ;
 	#define dpv(x) ;
 	#define dpvs(x) ;
+	#define dpvc(x) ;
 #endif
 
 

@@ -10,6 +10,8 @@
 
 #include "check_for_circular_dependencies.h"
 
+static unsigned round_id = 1;
+
 void check_for_circular_dependencies(
 	struct recipeset* all_recipes)
 {
@@ -20,13 +22,13 @@ void check_for_circular_dependencies(
 		{
 			void helper(struct recipe* recipe)
 			{
-				if (recipe->circular.checked)
+				if (recipe->circular.checked == round_id)
 				{
 					; // nothing to do
 				}
-				else if (recipe->circular.visited)
+				else if (recipe->circular.visited == round_id)
 				{
-					// "circaliar depenency!";
+					// "circular depenency!";
 					TODO;
 					exit(1);
 				}
@@ -37,13 +39,15 @@ void check_for_circular_dependencies(
 					recipeset_foreach(recipe->dep_on, helper);
 					
 					recipe->circular.visited = false;
-					recipe->circular.checked = true;
+					recipe->circular.checked = round_id;
 				}
 			}
 			helper(recipe);
 		}
 		callback;
 	}));
+	
+	round_id++;
 	
 	EXIT;
 }

@@ -12,8 +12,6 @@ void recipe_add_depenency(
 {
 	ENTER;
 	
-	this->execution.waiting++;
-	
 	recipeset_add(this->dep_on, depenency);
 	
 	recipeset_add(depenency->dep_of, this);

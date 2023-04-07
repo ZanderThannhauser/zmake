@@ -6,6 +6,8 @@ CFLAGS += -Wall -Werror -Wfatal-errors
 CFLAGS += -Wno-unused-result
 
 LDLIBS += -lm
+LDLIBS += -lgmp
+LDLIBS += -lgdbm
 
 buildtype ?= release
 
@@ -56,18 +58,20 @@ default: $(buildprefix)/zmake
 
 ARGS += --verbose
 #ARGS += --dry-run
-ARGS += --print-dependency-tree
+#ARGS += --print-dependency-tree
 #ARGS += --always-make
 
 ARGS += --jobs 1
 #ARGS += --jobs 2
 #ARGS += --jobs 10
 
-ARGS += -C examples/sandbox
-#ARGS += -C examples/sandbox a b
-#ARGS += -C examples/sandbox c
+#ARGS += -C examples/sandbox
 
-ARGS += -C examples/sleep
+ARGS += -C examples/abcdefg
+#ARGS += -C examples/abcdefg a b
+#ARGS += -C examples/abcdefg c
+
+#ARGS += -C examples/sleep
 #ARGS += -C examples/sleep 1
 
 #ARGS += -f ./examples/zmake/makefile

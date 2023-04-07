@@ -1,4 +1,5 @@
 
+struct dirfd;
 struct recipeset;
 
 struct recipe* recipeset_lookup(

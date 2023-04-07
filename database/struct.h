@@ -1,26 +1,10 @@
 
-#include <stdbool.h>
-#include <limits.h>
-#include <time.h>
-#include <sys/types.h>
+struct gdbm_file_info;
 
 struct database
 {
-	struct database_header {
-		unsigned i, n, cap;
-		time_t too_old;
-	} header, original_header;
+	struct gdbm_file_info* gdbm;
 	
-	int fd;
+	time_t now;
 };
-
-struct database_record
-{
-	char name[PATH_MAX];
-	dev_t st_dev;
-	ino_t st_ino;
-	bool passed;
-	time_t timestamp;
-};
-
 

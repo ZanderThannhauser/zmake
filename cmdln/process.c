@@ -109,15 +109,15 @@ void cmdln_process(int argc, char* const* argv)
 		{
 			case '-':
 				if (!strncmp(arg + 2, "directory", 8)) {
-					optarg = (arg[2 + 8] == '=') ? &arg[7] : argv[i++];
+					optarg = (arg[2 + 8] == '=') ? &arg[2 + 8 + 1] : argv[i++];
 					goto directory;
 				} else if (!strncmp(arg + 2, "makefile", 8)) {
-					optarg = (arg[2 + 8] == '=') ? &arg[7] : argv[i++];
+					optarg = (arg[2 + 8] == '=') ? &arg[2 + 8 + 1] : argv[i++];
 					goto makefile;
 				} else if (!strncmp(arg + 2, "jobs", 4)) {
-					optarg = (arg[2 + 4] == '=') ? &arg[7] : argv[i++];
+					optarg = (arg[2 + 4] == '=') ? &arg[2 + 4 + 1] : argv[i++];
 					goto jobs;
-				} else if (!strncmp(arg + 2, "always-make", 11))
+				} else if (!strncmp(arg + 2, "simulate-clean", 14))
 					goto always_make;
 				else if (!strncmp(arg + 2, "dry-run", 7))
 					goto dry_run;
@@ -194,7 +194,8 @@ void cmdln_process(int argc, char* const* argv)
 			
 			case 'n':
 			dry_run:
-				TODO;
+				cmdln_dry_run = true;
+				dpvb(cmdln_dry_run);
 				break;
 			
 			case 'p':
@@ -268,8 +269,6 @@ void cmdln_process(int argc, char* const* argv)
 				break;
 			
 			case 'n':
-				cmdln_dry_run = true;
-				dpvb(cmdln_dry_run);
 				break;
 			
 			case 'p':

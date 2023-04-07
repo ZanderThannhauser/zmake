@@ -1,23 +1,25 @@
 
 a:
-	touch a
+	$ touch a
 
 b:
-	touch b
+	$ touch b
 
 c: a b
-	touch c
+	$ touch c
 
 d:
-	touch d
+	$ touch d
 
 e:
-	touch e
+	$ touch e
 
 f: d e
-	touch f
+	$ touch f
 
 g: c f
-	touch g
+	$ touch g
 
 default: g
+
+

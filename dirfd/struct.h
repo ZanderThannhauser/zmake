@@ -5,8 +5,8 @@ struct dirfd
 {
 	int fd;
 	
-	dev_t st_dev;
-	ino_t st_ino;
+	dev_t dev;
+	ino_t ino;
 	
 	unsigned refcount;
 };

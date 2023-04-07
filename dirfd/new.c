@@ -41,8 +41,8 @@ struct dirfd* new_dirfd(
 		exit(e_syscall_failed);
 	}
 	
-	this->st_dev = buf.st_dev;
-	this->st_ino = buf.st_ino;
+	this->dev = buf.st_dev;
+	this->ino = buf.st_ino;
 	
 	this->refcount = 1;
 	

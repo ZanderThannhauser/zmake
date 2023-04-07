@@ -1,4 +1,4 @@
 bin/debug-build/./parse/parse.o: parse/parse.c debug.h defines/argv0.h \
- enums/error.h memory/smalloc.h memory/srealloc.h recipeset/add.h \
- recipe/new.h recipe/add_depenency.h recipe/free.h recipeset/lookup.h \
- dirfd/struct.h parse/parse.h parse/zebu.h
+ enums/error.h memory/smalloc.h memory/srealloc.h recipe/compare_scores.h \
+ recipeset/new.h recipeset/len.h recipeset/free.h propagate_ftimes.h \
+ parse/parse.h parse/recursive.h

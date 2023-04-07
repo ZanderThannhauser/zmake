@@ -9,6 +9,8 @@
 
 #include <dirfd/free.h>
 
+#include <command/free.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -29,11 +31,24 @@ void free_recipe(
 		
 		free_recipeset(this->dep_of);
 		
-		free_zebu_commands(this->commands);
+		for (unsigned i = 0, n = this->commands.n; i < n; i++)
+			free_command(this->commands.data[i]);
+		
+		free(this->commands.data);
 		
 		free(this);
 	}
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
 

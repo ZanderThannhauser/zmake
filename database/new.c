@@ -1,11 +1,17 @@
 
+#include <time.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <gdbm.h>
 
 #include <debug.h>
+
+#include <defines/argv0.h>
+
+#include <enums/error.h>
 
 #include <memory/smalloc.h>
 
@@ -20,32 +26,29 @@ struct database* new_database()
 	
 	struct database* this = smalloc(sizeof(*this));
 	
-	int fd = open(".zmake.db", O_RDWR | O_CREAT, 0664);
+	this->gdbm = gdbm_open(".zmake.db", 0, GDBM_WRCREAT | GDBM_CLOEXEC, 0664, NULL);
 	
-	errno = 0;
-	
-	if (read(fd, &this->header, sizeof(this->header)) < sizeof(this->header))
+	if (!this->gdbm)
 	{
-		if (errno)
-		{
-			TODO;
-			exit(1);
-		}
-		else
-		{
-			// brand new (empty) file
-			this->header = (struct database_header) {0, 0, 0};
-		}
+		fprintf(stderr, "%s: error on gdbm_open(\".zmake.db\"): %s\n", argv0, gdbm_strerror(gdbm_errno));
+		exit(e_syscall_failed);
 	}
 	
-	this->original_header = this->header;
+	this->now = time(NULL);
 	
 	if (cmdln_always_make)
-		this->header.too_old = time(NULL);
-	
-	this->fd = fd;
+	{
+		TODO;
+	}
 	
 	EXIT;
 	return this;
 }
+
+
+
+
+
+
+
 

@@ -1,4 +1,5 @@
 
+#include <errno.h>
 #include <assert.h>
 
 #include <debug.h>
@@ -17,6 +18,8 @@ bool recipeset_add(
 	bool new;
 	ENTER;
 	
+	errno = 0;
+	
 	struct avl_node_t* node = avl_insert(this->tree, recipe);
 	
 	if (node)
@@ -24,6 +27,10 @@ bool recipeset_add(
 		new = true;
 		if (this->should_refcount_elements) inc_recipe(recipe);
 		this->n++;
+	}
+	else if (errno == EEXIST)
+	{
+		new = false;
 	}
 	else
 	{
