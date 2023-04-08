@@ -1,10 +1,13 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
 
 #include <enums/error.h>
+
+#include <defines/argv0.h>
 
 #include <avl/search.h>
 
@@ -25,7 +28,7 @@ struct value* scope_lookup(
 	
 	if (!node)
 	{
-		TODO;
+		fprintf(stderr, "%s: use of undefined variable '%s'!\n", argv0, name);
 		exit(e_undefined_variable);
 	}
 	

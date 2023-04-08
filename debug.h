@@ -46,6 +46,9 @@
 	struct zebu_argument;
 	struct zebu_statement;
 	struct simple_command;
+	struct zebu_conditional;
+	struct value;
+	struct zebu_print;
 	struct command;
 	
 	#ifdef DEBUGGING

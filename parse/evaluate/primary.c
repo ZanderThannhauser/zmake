@@ -8,6 +8,7 @@
 #include <scope/lookup.h>
 
 #include "list.h"
+#include "root.h"
 #include "integer.h"
 #include "string.h"
 #include "primary.h"
@@ -21,7 +22,7 @@ struct value* evaluate_primary_expression(
 	
 	if (expression->inner)
 	{
-		TODO;
+		result = evaluate_expression(expression->inner, scope);
 	}
 	else if (expression->variable)
 	{

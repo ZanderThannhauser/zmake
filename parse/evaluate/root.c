@@ -3,7 +3,7 @@
 
 #include <parse/zebu.h>
 
-#include "equality.h"
+#include "conditional.h"
 #include "root.h"
 
 struct value* evaluate_expression(
@@ -12,7 +12,7 @@ struct value* evaluate_expression(
 {
 	ENTER;
 	
-	struct value* result = evaluate_equality_expression(expression->inner, scope);
+	struct value* result = evaluate_conditional_expression(expression->inner, scope);
 	
 	EXIT;
 	return result;

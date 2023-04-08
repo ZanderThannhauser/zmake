@@ -28,6 +28,7 @@
 #include <recipeset/free.h>
 
 #include <scope/new.h>
+#include <scope/assign_builtins.h>
 #include <scope/free.h>
 
 #include <mark_recipes_for_execution.h>
@@ -63,6 +64,8 @@ int main(int argc, char* const* argv)
 			struct dirfd* dirfd = new_dirfd(bundle->chdir);
 			
 			struct scope* scope = new_scope();
+			
+			scope_assign_builtins(scope);
 			
 			for (int j = 0, m = bundle->makefiles.n; j < m; j++)
 			{

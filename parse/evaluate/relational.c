@@ -5,7 +5,11 @@
 
 #include <parse/zebu.h>
 
-#include "additive.h"
+#include <value/boolean/new.h>
+#include <value/compare.h>
+#include <value/free.h>
+
+#include "shift.h"
 #include "relational.h"
 
 struct value* evaluate_relational_expression(
@@ -15,28 +19,59 @@ struct value* evaluate_relational_expression(
 	struct value* result;
 	ENTER;
 	
-	if (expression->gt)
+	if (expression->inner)
 	{
-		TODO;
+		result = evaluate_shift_expression(expression->inner, scope);
+	}
+	else if (expression->gt)
+	{
+		struct value* left  = evaluate_relational_expression(expression->left, scope);
+		struct value* right = evaluate_shift_expression(expression->right, scope);
+		
+		result = new_boolean_value(compare_values(left, right) > 0);
+		
+		free_value(left), free_value(right);
 	}
 	else if (expression->gte)
 	{
-		TODO;
+		struct value* left  = evaluate_relational_expression(expression->left, scope);
+		struct value* right = evaluate_shift_expression(expression->right, scope);
+		
+		result = new_boolean_value(compare_values(left, right) >= 0);
+		
+		free_value(left), free_value(right);
 	}
 	else if (expression->lt)
 	{
-		TODO;
+		struct value* left  = evaluate_relational_expression(expression->left, scope);
+		struct value* right = evaluate_shift_expression(expression->right, scope);
+		
+		result = new_boolean_value(compare_values(left, right) < 0);
+		
+		free_value(left), free_value(right);
 	}
 	else if (expression->lte)
 	{
-		TODO;
+		struct value* left  = evaluate_relational_expression(expression->left, scope);
+		struct value* right = evaluate_shift_expression(expression->right, scope);
+		
+		result = new_boolean_value(compare_values(left, right) <= 0);
+		
+		free_value(left), free_value(right);
 	}
 	else
 	{
-		result = evaluate_additive_expression(expression->inner, scope);
+		TODO;
 	}
 	
 	EXIT;
 	return result;
 }
+
+
+
+
+
+
+
 

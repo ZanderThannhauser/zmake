@@ -38,8 +38,10 @@ void evaluate_assignment_statement(
 		
 		free_value(value);
 	}
-	else if (assignment->peq)
+	else if (assignment->addeq)
 	{
+		TODO;
+		#if 0
 		struct value* left = scope_lookup(scope, name);
 		
 		struct value* right = evaluate_expression(assignment->expression, scope);
@@ -56,6 +58,7 @@ void evaluate_assignment_statement(
 		free_value(left), free_value(right);
 		
 		free_value(value);
+		#endif
 	}
 	else
 	{

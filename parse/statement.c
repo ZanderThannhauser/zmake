@@ -4,11 +4,13 @@
 #include <debug.h>
 
 #include "zebu.h"
+#include "print.h"
 #include "recipe.h"
 #include "include.h"
 #include "iterative.h"
-#include "assignment.h"
 #include "statement.h"
+#include "assignment.h"
+#include "conditional.h"
 
 void evaluate_statement(
 	struct zebu_statement* statement,
@@ -37,7 +39,12 @@ void evaluate_statement(
 	}
 	else if (statement->conditional)
 	{
-		TODO;
+		evaluate_conditional_statement(
+			statement->conditional,
+			all_recipes, propagate_ftimes,
+			database,
+			absolute_dirfd, local_dirfd,
+			scope);
 	}
 	else if (statement->iterative)
 	{
@@ -57,6 +64,12 @@ void evaluate_statement(
 			absolute_dirfd, local_dirfd,
 			scope);
 	}
+	else if (statement->print)
+	{
+		evaluate_print_statement(
+			statement->print,
+			scope);
+	}
 	else
 	{
 		TODO;
@@ -64,3 +77,14 @@ void evaluate_statement(
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
