@@ -26,6 +26,7 @@
 #include <command/print.h>
 #include <command/run.h>
 
+#include <database/struct.h>
 #include <database/update.h>
 
 #include <heap/new.h>
@@ -63,6 +64,8 @@ static bool recipe_should_be_run(
 			exit(1);
 		}
 	}
+	else if (buf.st_mtime < database->clean)
+		return true;
 	
 	bool any = recipeset_any(recipe->dep_on, ({
 		bool callback(const struct recipe* dependency)

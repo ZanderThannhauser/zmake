@@ -59,7 +59,7 @@ default: $(buildprefix)/zmake
 ARGS += --verbose
 #ARGS += --dry-run
 #ARGS += --print-dependency-tree
-#ARGS += --always-make
+#ARGS += --simulate-clean
 
 ARGS += --jobs 1
 #ARGS += --jobs 2

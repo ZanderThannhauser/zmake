@@ -30,20 +30,66 @@ struct database* new_database()
 	
 	if (!this->gdbm)
 	{
-		fprintf(stderr, "%s: error on gdbm_open(\".zmake.db\"): %s\n", argv0, gdbm_strerror(gdbm_errno));
+		fprintf(stderr, "%s: error on gdbm_open(\".zmake.db\"): %s\n",
+			argv0, gdbm_strerror(gdbm_errno));
 		exit(e_syscall_failed);
 	}
 	
 	this->now = time(NULL);
 	
-	if (cmdln_always_make)
 	{
-		TODO;
+		char key[] = "\0" "last-clean" "\0";
+		
+		if (cmdln_always_make)
+		{
+			this->clean = time(NULL);
+			
+			if (gdbm_store(
+				/* handle: */ this->gdbm,
+				/* key: */ (datum) {(char*) &key, sizeof(key)},
+				/* content: */ (datum) {(char*) &this->clean, sizeof(this->clean)},
+				/* flag: */ GDBM_REPLACE) < 0)
+			{
+				TODO;
+				exit(1);
+			}
+		}
+		else
+		{
+			datum content = gdbm_fetch(this->gdbm, (datum) {key, sizeof(key)});
+			
+			if (content.dptr)
+			{
+				this->clean = *((time_t*) content.dptr);
+			}
+			else if (gdbm_errno == GDBM_ITEM_NOT_FOUND)
+			{
+				this->clean = 0;
+			}
+			else
+			{
+				fprintf(stderr, "%s: error on gdbm_fetch(): %s\n",
+					argv0, gdbm_db_strerror(this->gdbm)),
+				exit(e_syscall_failed);
+			}
+		}
 	}
 	
 	EXIT;
 	return this;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

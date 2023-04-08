@@ -18,10 +18,10 @@ argument
 simple_command: (argument #args[])+;
 
 command
-	: '$' simple_command #simples[]
-	( '<' argument #redirect_in)?
-	( '|' simple_command #simples[])*
-	( '>' argument #redirect_out)? '\n';
+	:'$' simple_command #simples[]
+	('<' argument #redirect_in)?
+	('|' simple_command #simples[])*
+	('>' argument #redirect_out)? '\n';
 
 commands: (command #commands[])+;
 
