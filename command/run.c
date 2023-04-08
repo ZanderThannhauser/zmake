@@ -34,9 +34,9 @@ bool command_run(
 	
 	for (i = 0; !error && i < n - 1; i++)
 	{
-		if (pipe2(pipes[0][i], O_CLOEXEC) < 0)
+		if (pipe2((*pipes)[i], O_CLOEXEC) < 0)
 		{
-			TODO;
+			fprintf(stderr, "%s: pipe2(): %m\n", argv0);
 			error = true;
 		}
 	}
@@ -62,48 +62,62 @@ bool command_run(
 			if (fchdir(dirfd) < 0)
 			{
 				fprintf(stderr, "%s: fchdir(): %m\n", argv0);
-				error = true;
+				exit(1);
 			}
 			
-			if (!error && i == 0 && this->redirect_in)
+			if (i == 0)
 			{
-				int fd = open(this->redirect_in, O_RDONLY);
-				
-				if (fd < 0)
+				if (this->redirect_in)
 				{
-					TODO;
-					error = true;
-				}
-				else if (dup2(fd, 0) < 0)
-				{
-					TODO;
-					error = true;
+					int fd = open(this->redirect_in, O_RDONLY);
+					
+					if (fd < 0)
+					{
+						fprintf(stderr, "%s: open(): %m\n", argv0);
+						exit(1);
+					}
+					else if (dup2(fd, 0) < 0)
+					{
+						fprintf(stderr, "%s: dup2(): %m\n", argv0);
+						exit(1);
+					}
 				}
 			}
-			
-			if (!error && i + 1 == n && this->redirect_out)
+			else if (dup2((*pipes)[i-1][0], 0) < 0)
 			{
-				int fd = open(this->redirect_out, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-				
-				if (fd < 0)
-				{
-					TODO;
-					error = true;
-				}
-				else if (dup2(fd, 1) < 0)
-				{
-					TODO;
-					error = true;
-				}
+				fprintf(stderr, "%s: dup2(): %m\n", argv0);
+				exit(1);
 			}
 			
-			if (!error && execvp(*simple->args.data, simple->args.data) < 0)
+			if (i + 1 == n)
+			{
+				if (this->redirect_out)
+				{
+					int fd = open(this->redirect_out, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+					
+					if (fd < 0)
+					{
+						fprintf(stderr, "%s: open(): %m\n", argv0);
+						exit(1);
+					}
+					else if (dup2(fd, 1) < 0)
+					{
+						fprintf(stderr, "%s: dup2(): %m\n", argv0);
+						error = true;
+					}
+				}
+			}
+			else if (dup2((*pipes)[i][1], 1) < 0)
+			{
+				fprintf(stderr, "%s: dup2(): %m\n", argv0);
+				exit(1);
+			}
+			
+			if (execvp(*simple->args.data, simple->args.data) < 0)
 			{
 				fprintf(stderr, "%s: execvp(): %m\n", argv0);
-				error = true;
+				exit(1);
 			}
-			
-			exit(error);
 		}
 		else
 		{
@@ -113,9 +127,9 @@ bool command_run(
 	
 	for (i = 0; i < n - 1; i++)
 	{
-		if ((fd = pipes[0][i][0]))
+		if ((fd = pipes[0][i][0]) > 0)
 			close(fd);
-		if ((fd = pipes[0][i][1]))
+		if ((fd = pipes[0][i][1]) > 0)
 			close(fd);
 	}
 	

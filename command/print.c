@@ -22,7 +22,7 @@ void command_print(
 		printf(" < %s", this->redirect_in);
 	
 	for (unsigned i = 1, n = this->simples.n; i < n; i++)
-		putchar(' '), simple_command_print(this->simples.data[i]);
+		printf(" | "), simple_command_print(this->simples.data[i]);
 	
 	if (this->redirect_out)
 		printf(" > %s", this->redirect_out);

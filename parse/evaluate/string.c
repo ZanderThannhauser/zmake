@@ -48,10 +48,7 @@ char* escape_zebu_string(
 		}
 		else switch (*++moving)
 		{
-			case 'n':
-				TODO;
-				moving++;
-				break;
+			case 'n': append('\n'), moving++; break;
 			case 't':
 				TODO;
 				moving++;

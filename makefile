@@ -65,9 +65,9 @@ ARGS += --jobs 1
 #ARGS += --jobs 2
 #ARGS += --jobs 10
 
-#ARGS += -C examples/sandbox
+ARGS += -C examples/sandbox
 
-ARGS += -C examples/abcdefg
+#ARGS += -C examples/abcdefg
 #ARGS += -C examples/abcdefg a b
 #ARGS += -C examples/abcdefg c
 
