@@ -65,7 +65,7 @@ ARGS += --jobs 1
 #ARGS += --jobs 2
 #ARGS += --jobs 10
 
-ARGS += -C examples/sandbox
+#ARGS += -C examples/sandbox
 
 #ARGS += -C examples/abcdefg
 #ARGS += -C examples/abcdefg a b
@@ -74,7 +74,7 @@ ARGS += -C examples/sandbox
 #ARGS += -C examples/sleep
 #ARGS += -C examples/sleep 1
 
-#ARGS += -f ./examples/zmake/makefile
+ARGS += -f ./examples/zmake/makefile
 
 run: $(buildprefix)/zmake
 	$< $(ARGS)

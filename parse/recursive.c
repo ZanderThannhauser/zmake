@@ -1,4 +1,6 @@
 
+#include <limits.h>
+#include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <assert.h>
@@ -8,6 +10,7 @@
 #include <debug.h>
 
 #include <dirfd/struct.h>
+#include <dirfd/new.h>
 #include <dirfd/inc.h>
 #include <dirfd/free.h>
 
@@ -29,9 +32,19 @@ void recursive_parse(
 	struct dirfd* new_local_dirfd;
 	const char* filename;
 	
-	if (index(path, '/'))
+	char* slash = rindex(path, '/');
+	
+	if (slash)
 	{
-		TODO;
+		char dirname[PATH_MAX] = {};
+		
+		memcpy(dirname, path, slash - path);
+		
+		dpvs(dirname);
+		
+		new_local_dirfd = new_dirfd(dirname);
+		
+		filename = slash + 1;
 	}
 	else
 	{

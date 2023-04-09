@@ -24,6 +24,10 @@ void string_value_print(
 		
 		switch (c)
 		{
+			case '.':
+			case '/':
+			case '_':
+			case '-':
 			case 'a' ... 'z':
 			case 'A' ... 'Z':
 			case '0' ... '9':
@@ -31,8 +35,11 @@ void string_value_print(
 				break;
 			
 			default:
+			{
+				dpvc(c);
 				TODO;
 				break;
+			}
 		}
 	}
 	
@@ -40,4 +47,17 @@ void string_value_print(
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
