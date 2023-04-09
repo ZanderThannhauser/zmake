@@ -49,7 +49,12 @@
 	struct zebu_conditional;
 	struct value;
 	struct zebu_print;
+	struct commands;
+	struct zebu_primary_expression;
 	struct command;
+	struct zebu_assignments;
+	struct list_value;
+	struct set_value;
 	
 	#ifdef DEBUGGING
 		extern int debug_depth;

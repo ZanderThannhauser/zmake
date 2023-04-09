@@ -228,87 +228,10 @@ void cmdln_process(int argc, char* const* argv)
 	for (int i = 0, n = cmdln_makefiles.n; i < n; i++)
 	{
 		if (!cmdln_makefiles.data[i].makefiles.n)
-			append_makefile(i, "makefile");
+			append_makefile(i, "zmakefile");
 		if (!cmdln_makefiles.data[i].targets.n)
 			append_target(i, "default");
 	}
-	
-	#if 0
-	while ((opt = getopt_long(argc, argv,
-		"C:"
-		"f:"
-		"j:"
-		"B"
-		"n"
-		"p"
-		"v"
-		"h",
-		long_options, &option_index)) >= 0)
-	{
-		switch (opt)
-		{
-			// matching options:
-			case 'C':
-				cmdln_directory = optarg;
-				dpvs(cmdln_directory);
-				break;
-			
-			case 'f':
-				cmdln_makefile = optarg;
-				dpvs(cmdln_makefile);
-				break;
-			
-			case 'j':
-			{
-				break;
-			}
-			
-			case 'B':
-				cmdln_always_make = true;
-				dpvb(cmdln_always_make);
-				break;
-			
-			case 'n':
-				break;
-			
-			case 'p':
-				cmdln_print_dependency_tree = true;
-				dpvb(cmdln_print_dependency_tree);
-				break;
-			
-			case 'v':
-				cmdln_verbose = true;
-				dpvb(cmdln_verbose);
-				break;
-			
-			case 'h':
-				cmdln_help = true;
-				dpvb(cmdln_help);
-				break;
-			
-			default:
-				fputs(cmdln_usage_message, stdout);
-				exit(e_bad_cmdline_args);
-				break;
-		}
-	}
-	
-	const char* target;
-	while ((target = argv[optind++]))
-	{
-		dpvs(target);
-		
-		if (cmdln_targets.n == cmdln_targets.cap)
-		{
-			cmdln_targets.cap = cmdln_targets.cap << 1 ?: 1;
-			cmdln_targets.data = srealloc(
-				cmdln_targets.data,
-				sizeof(*cmdln_targets.data) * cmdln_targets.cap);
-		}
-		
-		cmdln_targets.data[cmdln_targets.n++] = target;
-	}
-	#endif
 	
 	EXIT;
 }

@@ -21,10 +21,8 @@
 #include <dirfd/struct.h>
 
 #include <cmdln/options/jobs.h>
-#include <cmdln/options/dry_run.h>
 
-#include <command/print.h>
-#include <command/run.h>
+#include <commands/run.h>
 
 #include <database/struct.h>
 #include <database/update.h>
@@ -74,8 +72,7 @@ static bool recipe_should_be_run(
 			
 			if (fstatat(dirfd->fd, dependency->target, &subbuf, AT_SYMLINK_NOFOLLOW) < 0)
 			{
-				TODO;
-				exit(1);
+				return true;
 			}
 			
 			return buf.st_mtime < subbuf.st_mtime;
@@ -198,7 +195,7 @@ void run_make_loop(
 		{
 			struct recipe* recipe = heap_pop(ready);
 			
-			if (recipe_should_be_run(recipe->dirfd, database, recipe))
+			if (recipe->commands && recipe_should_be_run(recipe->dirfd, database, recipe))
 			{
 				pid_t pid;
 				
@@ -211,26 +208,12 @@ void run_make_loop(
 				}
 				else if (!pid)
 				{
-					dpv(recipe->commands.n);
-					
-					for (unsigned i = 0, n = recipe->commands.n; i < n; i++)
+					if (commands_run(recipe->commands, recipe->dirfd->fd))
 					{
-						struct command* command = recipe->commands.data[i];
-						
-						command_print(command);
-						
-						if (!cmdln_dry_run)
-						{
-							int error = command_run(command, recipe->dirfd->fd);
-							
-							if (error)
-							{
-								fprintf(stderr, "%s: error "
-									"while attempting to build "
-									"target '%s'\n", argv0, recipe->target);
-								exit(e_syscall_failed);
-							}
-						}
+						fprintf(stderr, "%s: error "
+							"while attempting to build "
+							"target '%s'\n", argv0, recipe->target);
+						exit(e_syscall_failed);
 					}
 					
 					exit(0);
@@ -251,7 +234,7 @@ void run_make_loop(
 			}
 			else
 			{
-				// printf("%s: target '%s' does not need to be rebuilt\n", argv0, recipe->target);
+/*				printf("%s: target '%s' does not need to be rebuilt\n", argv0, recipe->target);*/
 				
 				recipeset_foreach(recipe->dep_of, ({
 					void callback(struct recipe* dep)

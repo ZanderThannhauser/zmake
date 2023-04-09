@@ -8,42 +8,59 @@
 
 #include <value/free.h>
 #include <value/string/struct.h>
+#include <value/list/struct.h>
 #include <value/struct.h>
 
 #include "root.h"
 #include "string.h"
 #include "argument.h"
 
-char* evaluate_argument(
-	struct zebu_argument* argument,
-	struct scope* scope)
+static void helper(
+	struct value* value,
+	void (*callback)(char*))
 {
-	char* retval;
+	if (value->kind == vk_string)
+	{
+		struct string_value* spef = (void*) value;
+		
+		callback(strdup(spef->chars));
+	}
+	else if (value->kind == vk_list)
+	{
+		struct list_value* spef = (void*) value;
+		
+		for (unsigned i = 0, n = spef->len; i < n; i++)
+			helper(spef->elements[i], callback);
+	}
+	else
+	{
+		TODO;
+		exit(1);
+	}
+}
+
+void evaluate_argument(
+	struct zebu_argument* argument,
+	struct scope* scope,
+	void (*callback)(char*))
+{
 	ENTER;
 	
 	if (argument->expression)
 	{
 		struct value* result = evaluate_expression(argument->expression, scope);
 		
-		if (result->kind != vk_string)
-		{
-			TODO;
-			exit(1);
-		}
-		
-		struct string_value* spef = (void*) result;
-		
-		retval = strdup(spef->chars);
+		helper(result, callback);
 		
 		free_value(result);
 	}
 	else if (argument->text)
 	{
-		retval = strdup((char*) argument->text->data);
+		callback(strdup((char*) argument->text->data));
 	}
 	else if (argument->string)
 	{
-		retval = escape_zebu_string(argument->string);
+		callback(escape_zebu_string(argument->string));
 	}
 	else
 	{
@@ -51,6 +68,15 @@ char* evaluate_argument(
 	}
 	
 	EXIT;
-	return retval;
 }
+
+
+
+
+
+
+
+
+
+
 

@@ -10,8 +10,6 @@
 
 #include <recipe/struct.h>
 
-#include <misc/hsv_to_rgb.h>
-
 #include "mark_recipes_for_execution.h"
 #include "print_dependency_tree.h"
 
@@ -57,6 +55,18 @@ void print_dependency_tree(
 				{
 					fprintf(stream, ""
 						"\"%s:%p\" -> \"%s:%p\" [" "\n"
+						"];" "\n"
+					"", target, dirfd, dependency->target, dependency->dirfd);
+				}
+				callback;
+			}));
+			
+			recipeset_foreach(recipe->odep_on, ({
+				void callback(struct recipe* dependency)
+				{
+					fprintf(stream, ""
+						"\"%s:%p\" -> \"%s:%p\" [" "\n"
+							"style = dashed" "\n"
 						"];" "\n"
 					"", target, dirfd, dependency->target, dependency->dirfd);
 				}

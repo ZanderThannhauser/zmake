@@ -72,6 +72,8 @@ struct database* new_database()
 					argv0, gdbm_db_strerror(this->gdbm)),
 				exit(e_syscall_failed);
 			}
+			
+			free(content.dptr);
 		}
 	}
 	

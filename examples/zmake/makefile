@@ -1,34 +1,48 @@
 
 cc = "gcc"
 
+cppflags = ["-I", "."]
+cppflags += ["-D", "_GNU_SOURCE"]
+
 cflags = ["-Wall", "-Werror"]
+
+ldlibs = ["-lgmp", "-lgdbm"]
 
 srcs = []
 
 /tmp/srclist.md:
-	$ find -name '*.c' | sed 's/^/srcs += ["/g;s/$/"]/g' > /tmp/srclist.md
+	$ find -name '*.c' | sed 's@^./@srcs += "@g;s@$@"@g' > /tmp/srclist.md
 
 include /tmp/srclist.md
 
+/tmp/whatever:
+	$ touch /tmp/whatever
+
+default: /tmp/whatever
+
 objs = []
 deps = []
+dirs = {}
 for src in srcs:
 	objdir = "/tmp/bin/" + dir(src); obj = "/tmp/bin/" + basename(src) + '.o'
 	depdir = "/tmp/dep/" + dir(src); dep = "/tmp/dep/" + basename(src) + '.d'
-	(objdir): $ mkdir -p (objdir)
-	(depdir): $ mkdir -p (depdir)
 	(obj) (dep): (src) | (objdir) (depdir)
 		$ (cc) -c (cppflags) (cflags) (src) -MMD -MF (dep) -o (obj)
-	objs += [obj]; deps += [dep]
-endfor
+	dirs += objdir; objs += obj
+	dirs += depdir; deps += dep
+end
+
+for x in dirs:
+	(x):
+		$ mkdir -p (x)
+end
 
 default: /tmp/zmake
 
 /tmp/zmake: (objs)
-	$ (cc) (objs) -o /tmp/zmake
+	$ (cc) (objs) (ldlibs) -o /tmp/zmake
 
 include (deps)
-
 
 
 

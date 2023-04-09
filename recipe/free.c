@@ -9,7 +9,7 @@
 
 #include <dirfd/free.h>
 
-#include <command/free.h>
+#include <commands/free.h>
 
 #include "struct.h"
 #include "free.h"
@@ -29,12 +29,11 @@ void free_recipe(
 		
 		free_recipeset(this->dep_on);
 		
+		free_recipeset(this->odep_on);
+		
 		free_recipeset(this->dep_of);
 		
-		for (unsigned i = 0, n = this->commands.n; i < n; i++)
-			free_command(this->commands.data[i]);
-		
-		free(this->commands.data);
+		free_commands(this->commands);
 		
 		free(this);
 	}

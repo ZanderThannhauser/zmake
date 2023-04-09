@@ -6,7 +6,11 @@ struct value* perform_add(
 	struct value* left,
 	struct value* right);
 
-struct value* perform_subtract(
+void perform_addeq(
+	struct value* left,
+	struct value* right);
+
+struct value* perform_sub(
 	struct value* left,
 	struct value* right);
 

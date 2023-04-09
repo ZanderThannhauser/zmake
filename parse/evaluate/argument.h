@@ -2,6 +2,7 @@
 struct zebu_argument;
 struct scope;
 
-char* evaluate_argument(
+void evaluate_argument(
 	struct zebu_argument* argument,
-	struct scope* scope);
+	struct scope* scope,
+	void (*callback)(char*));

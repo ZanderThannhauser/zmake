@@ -1,5 +1,5 @@
 
-%skip: [' ', '\t']+;
+%skip: (' ' | '\t' | "\\\n" | "#" [!'\n']* '\n')+;
 
 `string`: '\"' [!'\"']* '\"' | '\'' [!'\'']* '\'';
 
@@ -10,9 +10,9 @@
 `integer`: ['0'-'9']+;
 
 argument
-	: '(' expression #expression ')'
+	: `text` #text
 	| `string` #string
-	| `text` #text
+	| '(' expression #expression ')'
 	;
 
 simple_command: (argument #args[])+;
@@ -26,16 +26,19 @@ command
 commands: (command #commands[])+;
 
 primary_expression
-	: '(' expression #inner ')'
-	| '[' #list (expression #elements[] (',' expression #elements[])*)? ']'
-	| `identifier` #variable
+	: `string` #string
 	| `integer` #integer
-	| `string` #string
-	| "dir" "(" expression #path ")"
-	| "basename" "(" expression #path ")"
+	| `identifier` #variable
+	| '(' expression #inner ')'
+	| '[' #list (expression #elements[] (',' expression #elements[])*)? ']'
+	| '{' #set  (expression #elements[] (',' expression #elements[])*)? '}'
+	| "dir" #dir "(" expression #path ")"
+	| "basename" #basename "(" expression #path ")"
 	;
 
-postfix_expression: primary_expression #inner;
+postfix_expression
+	: primary_expression #inner
+	;
 
 prefix_expression
 	: postfix_expression #inner
@@ -107,13 +110,6 @@ conditional_expression
 	| logical_or_expression '?' expression #truecase ':' conditional_expression #falsecase
 	;
 
-expression: conditional_expression #inner;
-
-recipe: (argument #targets[])+
-	':' (argument #dependencies[])*
-	('|' (argument #ordered[])*)? '\n'?
-	(commands #commands | '\n') '\n'*;
-
 assignment_operator
 	:   "="    #eq
 	|  "*=" #muleq
@@ -128,25 +124,34 @@ assignment_operator
 	| ">>=" #rsheq
 	;
 
-assignment: `identifier` #variable assignment_operator #op expression #expression;
+expression: conditional_expression #inner;
 
-assignments: assignment (';' assignment)* ';'? '\n'+;
+recipe: (argument #targets[])+ ':' (argument #dependencies[])* ('|' (argument #ordered[])*)? '\n'?
+	(commands #commands | '\n') '\n'*;
+
+assignment
+	: `identifier` #variable assignment_operator #op expression #expression
+	;
+
+assignments
+	: assignment #assignments[] (';' assignment #assignments[])*  ';'? '\n'+
+	;
 
 conditional:
-	"if" expression #conditional ':' '\n'+
+	"if" expression #conditional ':' '\n'*
 		(statement #truecase[])+
-	("else" '\n'?
+	("else" ":" '\n'?
 		(statement #falsecase[])+)?
-	"endif" '\n'+;
+	"end" '\n'+;
 
 iterative:
 	"for" `identifier` #variable "in" expression #list ':' '\n'
 		(statement #body[])+
-	"endfor" '\n'+;
+	"end" '\n'+;
 
-include: "include" argument #argument '\n'+;
+include: "include" argument #argument ';'? '\n'+;
 
-print: "print" expression #expression '\n'+;
+print: "print" expression #expression ';'? '\n'+;
 
 statement
 	: recipe #recipe

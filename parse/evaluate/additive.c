@@ -18,6 +18,8 @@
 #include <value/string/new.h>
 #include <value/list/struct.h>
 #include <value/list/new.h>
+#include <value/list/append.h>
+#include <value/set/add.h>
 #include <value/struct.h>
 #include <value/inc.h>
 #include <value/free.h>
@@ -66,6 +68,8 @@ struct value* perform_add(
 	}
 	else if (left->kind == vk_list && right->kind == vk_list)
 	{
+		TODO;
+		#if 0
 		struct list_value* spef_left = (void*) left;
 		struct list_value* spef_right = (void*) right;
 		
@@ -81,6 +85,11 @@ struct value* perform_add(
 			elements[i + j] = inc_value(spef_right->elements[j]);
 		
 		result = new_list_value(elements, len);
+		#endif
+	}
+	else if (left->kind == vk_set && right->kind == vk_set)
+	{
+		TODO;
 	}
 	else
 	{
@@ -92,7 +101,54 @@ struct value* perform_add(
 	return result;
 }
 
-struct value* perform_subtract(
+void perform_addeq(
+	struct value* left,
+	struct value* right)
+{
+	ENTER;
+	
+	if (left->kind == vk_integer && right->kind == vk_integer)
+	{
+		TODO;
+	}
+	else if (left->kind == vk_string && right->kind == vk_string)
+	{
+		TODO;
+	}
+	else if (left->kind == vk_list && right->kind == vk_list)
+	{
+		struct list_value* spef_left = (void*) left;
+		struct list_value* spef_right = (void*) right;
+		
+		for (unsigned i = 0, n = spef_right->len; i < n; i++)
+			list_value_append(spef_left, spef_right->elements[i]);
+	}
+	else if (left->kind == vk_list)
+	{
+		struct list_value* spef_left = (void*) left;
+		
+		list_value_append(spef_left, right);
+	}
+	else if (left->kind == vk_set && right->kind == vk_set)
+	{
+		TODO;
+	}
+	else if (left->kind == vk_set)
+	{
+		struct set_value* spef_left = (void*) left;
+		
+		set_value_add(spef_left, right);
+	}
+	else
+	{
+		TODO;
+		exit(1);
+	}
+	
+	EXIT;
+}
+
+struct value* perform_sub(
 	struct value* left,
 	struct value* right)
 {
@@ -184,7 +240,7 @@ struct value* evaluate_additive_expression(
 		
 		struct value* right = evaluate_multiplicative_expression(expression->right, scope);
 		
-		result = perform_subtract(left, right);
+		result = perform_sub(left, right);
 		
 		free_value(left), free_value(right);
 	}

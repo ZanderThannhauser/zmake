@@ -9,8 +9,8 @@
 #include "include.h"
 #include "iterative.h"
 #include "statement.h"
-#include "assignment.h"
 #include "conditional.h"
+#include "assignments.h"
 
 void evaluate_statement(
 	struct zebu_statement* statement,
@@ -23,8 +23,6 @@ void evaluate_statement(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (statement->recipe)
 	{
 		evaluate_recipe_statement(
@@ -35,18 +33,21 @@ void evaluate_statement(
 			/* struct dirfd* dirfd: */ absolute_dirfd,
 			/* struct scope* scope: */ scope);
 	}
-	else if (statement->assignment)
+	else if (statement->assignments)
 	{
-		evaluate_assignment_statement(statement->assignment, scope);
+		evaluate_assignments_statement(statement->assignments, scope);
 	}
 	else if (statement->conditional)
 	{
+		TODO;
+		#if 0
 		evaluate_conditional_statement(
 			statement->conditional,
 			all_recipes, propagate_ftimes,
 			database,
 			absolute_dirfd, local_dirfd,
 			scope);
+		#endif
 	}
 	else if (statement->iterative)
 	{
@@ -68,15 +69,17 @@ void evaluate_statement(
 	}
 	else if (statement->print)
 	{
+		TODO;
+		#if 0
 		evaluate_print_statement(
 			statement->print,
 			scope);
+		#endif
 	}
 	else
 	{
 		TODO;
 	}
-	#endif
 	
 	EXIT;
 }

@@ -8,7 +8,8 @@
 
 #include <value/struct.h>
 #include <value/free.h>
-#include <value/list/struct.h>
+#include <value/list/foreach.h>
+#include <value/set/foreach.h>
 
 #include "evaluate/root.h"
 #include "statement.h"
@@ -30,19 +31,9 @@ void evaluate_iterative_statement(
 	
 	dpvs(variable);
 	
-	struct value* glist = evaluate_expression(iterative->list, scope);
-	
-	if (glist->kind != vk_list)
+	void foreach(struct value* element)
 	{
-		TODO;
-		exit(1);
-	}
-	
-	struct list_value* list = (void*) glist;
-	
-	for (unsigned i = 0, n = list->len; i < n; i++)
-	{
-		struct value* element = list->elements[i];
+		ENTER;
 		
 		scope_assign(scope, variable, element);
 		
@@ -59,9 +50,30 @@ void evaluate_iterative_statement(
 				/* struct dirfd* */ local_dirfd,
 				/* struct scope* */ scope);
 		}
+		
+		EXIT;
 	}
 	
-	free_value(glist);
+	struct value* value = evaluate_expression(iterative->list, scope);
+	
+	switch (value->kind)
+	{
+		case vk_list:
+			list_value_foreach((struct list_value*) value, foreach);
+			break;
+		
+		case vk_set:
+			set_value_foreach((struct set_value*) value, foreach);
+			break;
+		
+		default:
+			TODO;
+			exit(1);
+			break;
+	}
+	
+	
+	free_value(value);
 	
 	EXIT;
 }

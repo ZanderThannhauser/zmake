@@ -7,6 +7,6 @@ struct list_value
 	
 	struct value** elements;
 	
-	unsigned len;
+	unsigned len, cap;
 };
 

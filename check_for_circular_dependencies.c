@@ -37,6 +37,7 @@ void check_for_circular_dependencies(
 					recipe->circular.visited = true;
 					
 					recipeset_foreach(recipe->dep_on, helper);
+					recipeset_foreach(recipe->odep_on, helper);
 					
 					recipe->circular.visited = false;
 					recipe->circular.checked = round_id;

@@ -7,6 +7,9 @@
 
 #include <scope/lookup.h>
 
+#include "functions/basename.h"
+#include "functions/dir.h"
+#include "set.h"
 #include "list.h"
 #include "root.h"
 #include "integer.h"
@@ -43,6 +46,18 @@ struct value* evaluate_primary_expression(
 	else if (expression->list)
 	{
 		result = evaluate_list_expression(expression, scope);
+	}
+	else if (expression->set)
+	{
+		result = evaluate_set_expression(expression, scope);
+	}
+	else if (expression->basename)
+	{
+		result = evaluate_basename_function(expression, scope);
+	}
+	else if (expression->dir)
+	{
+		result = evaluate_dir_function(expression, scope);
 	}
 	else
 	{

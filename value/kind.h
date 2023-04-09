@@ -11,6 +11,8 @@ enum value_kind
 	vk_string,
 	
 	vk_list,
+	
+	vk_set,
 };
 
 #endif

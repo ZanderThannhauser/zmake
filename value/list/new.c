@@ -7,9 +7,7 @@
 #include "struct.h"
 #include "new.h"
 
-struct value* new_list_value(
-	struct value** elements,
-	unsigned len)
+struct value* new_list_value()
 {
 	ENTER;
 	
@@ -18,8 +16,9 @@ struct value* new_list_value(
 		&list_value_inheritance,
 		sizeof(*this));
 	
-	this->elements = elements;
-	this->len = len;
+	this->elements = NULL;
+	this->len = 0;
+	this->cap = 0;
 	
 	EXIT;
 	return (struct value*) this;

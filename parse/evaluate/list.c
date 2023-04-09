@@ -5,9 +5,9 @@
 
 #include <parse/zebu.h>
 
-#include <value/inc.h>
 #include <value/free.h>
 #include <value/list/new.h>
+#include <value/list/append.h>
 
 #include "root.h"
 #include "list.h"
@@ -18,10 +18,7 @@ struct value* evaluate_list_expression(
 {
 	ENTER;
 	
-	struct {
-		struct value** data;
-		unsigned n, cap;
-	} elements = {};
+	struct list_value* result = (void*) new_list_value();
 	
 	for (unsigned i = 0, n = expression->elements.n; i < n; i++)
 	{
@@ -29,21 +26,13 @@ struct value* evaluate_list_expression(
 		
 		struct value* element = evaluate_expression(zelement, scope);
 		
-		if (elements.n == elements.cap)
-		{
-			elements.cap = elements.cap << 1 ?: 1;
-			elements.data = srealloc(elements.data, sizeof(*elements.data) * elements.cap);
-		}
-		
-		elements.data[elements.n++] = inc_value(element);
+		list_value_append(result, element);
 		
 		free_value(element);
 	}
 	
-	struct value* result = new_list_value(elements.data, elements.n);
-	
 	EXIT;
-	return result;
+	return (void*) result;
 }
 
 

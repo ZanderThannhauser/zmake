@@ -56,16 +56,18 @@ depprefix   = dep/$(buildtype)-build
 
 default: $(buildprefix)/zmake
 
-ARGS += --verbose
+#ARGS += --verbose
 #ARGS += --dry-run
 #ARGS += --print-dependency-tree
 #ARGS += --simulate-clean
 
 ARGS += --jobs 1
 #ARGS += --jobs 2
+#ARGS += --jobs 8
 #ARGS += --jobs 10
 
 #ARGS += -C examples/sandbox
+#ARGS += -C examples/sandbox /tmp/whatever
 
 #ARGS += -C examples/abcdefg
 #ARGS += -C examples/abcdefg a b

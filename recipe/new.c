@@ -24,8 +24,9 @@ struct recipe* new_recipe(
 	this->target = strdup(target);
 	this->dirfd = inc_dirfd(dirfd);
 	
-	this->dep_on = new_recipeset(false);
-	this->dep_of = new_recipeset(false);
+	this-> dep_on = new_recipeset(false);
+	this->odep_on = new_recipeset(false);
+	this-> dep_of = new_recipeset(false);
 	
 	this->circular.checked = 0;
 	this->circular.visited = false;
@@ -33,9 +34,7 @@ struct recipe* new_recipe(
 	this->execution.round = 0;
 	this->execution.marked = false;
 	
-	this->commands.data = NULL;
-	this->commands.cap = 0;
-	this->commands.n = 0;
+	this->commands = NULL;
 	
 	this->refcount = 1;
 	

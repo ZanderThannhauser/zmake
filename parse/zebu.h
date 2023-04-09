@@ -76,6 +76,10 @@ unsigned startline, endline;
 
 struct zebu_assignments
 {
+struct {
+struct zebu_assignment** data;
+unsigned n, cap;
+} assignments;
 unsigned refcount;
 unsigned startline, endline;
 };
@@ -229,6 +233,8 @@ unsigned startline, endline;
 
 struct zebu_primary_expression
 {
+struct zebu_token* basename;
+struct zebu_token* dir;
 struct {
 struct zebu_expression** data;
 unsigned n, cap;
@@ -237,6 +243,7 @@ struct zebu_expression* inner;
 struct zebu_token* integer;
 struct zebu_token* list;
 struct zebu_expression* path;
+struct zebu_token* set;
 struct zebu_token* string;
 struct zebu_token* variable;
 unsigned refcount;
