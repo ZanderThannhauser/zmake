@@ -1,4 +1,5 @@
 bin/
+dep/zmake-build/
 *.db
 *.dot
 examples/sandbox

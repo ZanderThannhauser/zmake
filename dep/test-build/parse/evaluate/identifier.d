@@ -1,1 +1,1 @@
-bin/test-build/./parse/evaluate/identifier.o: parse/evaluate/identifier.c
+bin/test-build/parse/evaluate/identifier.o: parse/evaluate/identifier.c

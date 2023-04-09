@@ -106,7 +106,7 @@ install: $(buildprefix)/zmake
 
 srclist.mk:
 	@ echo "searching for source files..."
-	@ find -name '*.c' -! -path '*/-*' | sort -V | sed 's/^/srcs += /' > $@
+	@ find -name '*.c' -! -path '*/-*' | sort -V | sed 's#^./#srcs += #' > $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include srclist.mk

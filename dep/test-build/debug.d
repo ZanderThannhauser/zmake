@@ -1,1 +1,1 @@
-bin/test-build/./debug.o: debug.c
+bin/test-build/debug.o: debug.c

@@ -11,12 +11,12 @@ ldlibs = ["-lgmp", "-lgdbm"]
 srcs = []
 
 srclist.md:
-	$ find -name '*.c' | sed 's#^./#srcs += "#g;s#$#"#g' > srclist.md
+	$ find -name '*.c' | sort -V | sed 's#^./#srcs += "#g;s#$#"#g' > srclist.md
 
 include srclist.md
 
-buildprefix = "bin/release-build/"
-depprefix   = "dep/release-build/"
+buildprefix = "bin/zmake-build/"
+depprefix   = "dep/zmake-build/"
 
 objs = []
 deps = []

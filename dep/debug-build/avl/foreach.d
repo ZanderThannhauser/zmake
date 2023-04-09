@@ -1,2 +1,2 @@
-bin/debug-build/./avl/foreach.o: avl/foreach.c avl/tree.h avl/freeitem.h \
+bin/debug-build/avl/foreach.o: avl/foreach.c avl/tree.h avl/freeitem.h \
  avl/compare.h avl/node.h avl/foreach.h

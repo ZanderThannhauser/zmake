@@ -1,1 +1,1 @@
-bin/test-build/./cmdln/options/verbose.o: cmdln/options/verbose.c
+bin/test-build/cmdln/options/verbose.o: cmdln/options/verbose.c

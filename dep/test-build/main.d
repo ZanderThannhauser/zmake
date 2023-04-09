@@ -1,4 +1,4 @@
-bin/test-build/./main.o: main.c debug.h defines/argv0.h enums/error.h \
+bin/test-build/main.o: main.c debug.h defines/argv0.h enums/error.h \
  memory/smalloc.h memory/srealloc.h cmdln/process.h cmdln/usage.h \
  cmdln/options/help.h cmdln/options/makefiles.h \
  cmdln/options/print_dependency_tree.h cmdln/free.h database/new.h \

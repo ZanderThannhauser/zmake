@@ -158,7 +158,6 @@ void run_make_loop(
 					if (waitid(P_PIDFD, fd, &info, WEXITED) < 0)
 					{
 						fprintf(stderr, "%s: waitid(): %m\n", argv0);
-						TODO;
 						shutdown = true;
 					}
 					else if (WIFEXITED(info.si_status) && !WEXITSTATUS(info.si_status))
@@ -179,6 +178,9 @@ void run_make_loop(
 						fprintf(stderr, "%s: subcommand failed, shutting down...\n", argv0);
 						
 						database_update(database, recipe->target, recipe->dirfd);
+						
+						if (unlinkat(recipe->dirfd->fd, recipe->target, 0) < 0 && errno != ENOENT)
+							fprintf(stderr, "%s: error on unlink(): %m\n", argv0);
 						
 						shutdown = true;
 					}
@@ -279,6 +281,24 @@ void run_make_loop(
 			}
 		}
 	}
+	
+	#ifndef RELEASE
+	recipeset_foreach(all_recipes, ({
+		void callback(struct recipe* recipe)
+		{
+			if (true
+				&& recipe->execution.marked
+				&& recipe->execution.round == execution_round_id
+				&& recipe->execution.waiting)
+			{
+				fprintf(stderr, "!! internal error: target '%s' should have "
+					"built but didn't! (waiting == %u)!!\n",
+					recipe->target, recipe->execution.waiting);
+			}
+		}
+		callback;
+	}));
+	#endif
 	
 	free_heap(ready);
 	

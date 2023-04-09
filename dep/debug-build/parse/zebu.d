@@ -1,1 +1,1 @@
-bin/debug-build/./parse/zebu.o: parse/zebu.c parse/zebu.h
+bin/debug-build/parse/zebu.o: parse/zebu.c parse/zebu.h

@@ -1,3 +1,3 @@
-bin/test-build/./value/integer/inheritance.o: value/integer/inheritance.c \
+bin/test-build/value/integer/inheritance.o: value/integer/inheritance.c \
  value/integer/../inheritance.h value/integer/inheritance.h \
  value/integer/compare.h value/integer/print.h value/integer/free.h

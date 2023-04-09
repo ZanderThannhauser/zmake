@@ -1,5 +1,4 @@
-bin/release-build/parse/recipe.o: parse/recipe.c debug.h defines/argv0.h \
- enums/error.h memory/smalloc.h memory/srealloc.h parse/zebu.h \
+bin/release-build/parse/recipe.o: parse/recipe.c debug.h parse/zebu.h \
  commands/len.h commands/new.h commands/append.h commands/inc.h \
  commands/free.h commands/command/struct.h commands/command/new.h \
  commands/command/append.h commands/command/simple/new.h \

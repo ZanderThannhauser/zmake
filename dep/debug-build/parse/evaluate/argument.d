@@ -1,4 +1,4 @@
-bin/debug-build/./parse/evaluate/argument.o: parse/evaluate/argument.c \
+bin/debug-build/parse/evaluate/argument.o: parse/evaluate/argument.c \
  debug.h defines/argv0.h enums/error.h memory/smalloc.h memory/srealloc.h \
  parse/zebu.h value/free.h value/string/struct.h value/string/../struct.h \
  value/string/../kind.h value/list/struct.h value/list/../struct.h \

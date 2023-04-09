@@ -1,1 +1,1 @@
-bin/debug-build/./heap/len.o: heap/len.c
+bin/debug-build/heap/len.o: heap/len.c
