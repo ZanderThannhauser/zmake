@@ -23,6 +23,8 @@ void evaluate_assignment_statement(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	const char* name = (char*) assignment->variable->data;
 	
 	if (assignment->eq)
@@ -61,6 +63,7 @@ void evaluate_assignment_statement(
 	{
 		TODO;
 	}
+	#endif
 	
 	EXIT;
 }

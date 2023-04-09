@@ -19,8 +19,7 @@ for src in srcs:
 	(depdir): $ mkdir -p (depdir)
 	(obj) (dep): (src) | (objdir) (depdir)
 		$ (cc) -c (cppflags) (cflags) (src) -MMD -MF (dep) -o (obj)
-	objs += [obj]
-	deps += [dep]
+	objs += [obj]; deps += [dep]
 endfor
 
 default: /tmp/zmake

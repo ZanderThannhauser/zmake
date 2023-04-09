@@ -50,19 +50,32 @@ unsigned startline, endline;
 
 struct zebu_assignment
 {
+struct zebu_expression* expression;
+struct zebu_assignment_operator* op;
+struct zebu_token* variable;
+unsigned refcount;
+unsigned startline, endline;
+};
+
+struct zebu_assignment_operator
+{
 struct zebu_token* addeq;
 struct zebu_token* andeq;
 struct zebu_token* diveq;
 struct zebu_token* eq;
-struct zebu_expression* expression;
 struct zebu_token* ioreq;
 struct zebu_token* lsheq;
 struct zebu_token* modeq;
 struct zebu_token* muleq;
 struct zebu_token* rsheq;
 struct zebu_token* subeq;
-struct zebu_token* variable;
 struct zebu_token* xoreq;
+unsigned refcount;
+unsigned startline, endline;
+};
+
+struct zebu_assignments
+{
 unsigned refcount;
 unsigned startline, endline;
 };
@@ -223,6 +236,7 @@ unsigned n, cap;
 struct zebu_expression* inner;
 struct zebu_token* integer;
 struct zebu_token* list;
+struct zebu_expression* path;
 struct zebu_token* string;
 struct zebu_token* variable;
 unsigned refcount;
@@ -243,7 +257,14 @@ struct {
 struct zebu_argument** data;
 unsigned n, cap;
 } dependencies;
-struct zebu_argument* target;
+struct {
+struct zebu_argument** data;
+unsigned n, cap;
+} ordered;
+struct {
+struct zebu_argument** data;
+unsigned n, cap;
+} targets;
 unsigned refcount;
 unsigned startline, endline;
 };
@@ -294,7 +315,7 @@ unsigned startline, endline;
 
 struct zebu_statement
 {
-struct zebu_assignment* assignment;
+struct zebu_assignments* assignments;
 struct zebu_conditional* conditional;
 struct zebu_include* include;
 struct zebu_iterative* iterative;
@@ -312,6 +333,8 @@ extern struct zebu_additive_expression* inc_zebu_additive_expression(struct zebu
 extern struct zebu_and_expression* inc_zebu_and_expression(struct zebu_and_expression* ptree);
 extern struct zebu_argument* inc_zebu_argument(struct zebu_argument* ptree);
 extern struct zebu_assignment* inc_zebu_assignment(struct zebu_assignment* ptree);
+extern struct zebu_assignment_operator* inc_zebu_assignment_operator(struct zebu_assignment_operator* ptree);
+extern struct zebu_assignments* inc_zebu_assignments(struct zebu_assignments* ptree);
 extern struct zebu_command* inc_zebu_command(struct zebu_command* ptree);
 extern struct zebu_commands* inc_zebu_commands(struct zebu_commands* ptree);
 extern struct zebu_conditional* inc_zebu_conditional(struct zebu_conditional* ptree);
@@ -347,6 +370,10 @@ extern void free_zebu_and_expression(struct zebu_and_expression* ptree);
 extern void free_zebu_argument(struct zebu_argument* ptree);
 
 extern void free_zebu_assignment(struct zebu_assignment* ptree);
+
+extern void free_zebu_assignment_operator(struct zebu_assignment_operator* ptree);
+
+extern void free_zebu_assignments(struct zebu_assignments* ptree);
 
 extern void free_zebu_command(struct zebu_command* ptree);
 

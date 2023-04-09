@@ -5,7 +5,7 @@
 
 `identifier`: ['_', 'a'-'z'] ['a'-'z', '0'-'9']*;
 
-`text`: ['a'-'z', '0'-'9', '/', '.', '_', '-']+;
+`text`: ['a'-'z', 'A'-'Z', '0'-'9', '/', '.', '_', '-']+;
 
 `integer`: ['0'-'9']+;
 
@@ -31,6 +31,8 @@ primary_expression
 	| `identifier` #variable
 	| `integer` #integer
 	| `string` #string
+	| "dir" "(" expression #path ")"
+	| "basename" "(" expression #path ")"
 	;
 
 postfix_expression: primary_expression #inner;
@@ -107,10 +109,13 @@ conditional_expression
 
 expression: conditional_expression #inner;
 
-recipe: argument #target ':' (argument #dependencies[])* '\n'? (commands #commands | '\n') '\n'*;
+recipe: (argument #targets[])+
+	':' (argument #dependencies[])*
+	('|' (argument #ordered[])*)? '\n'?
+	(commands #commands | '\n') '\n'*;
 
-assignment: `identifier` #variable
-	("="    #eq
+assignment_operator
+	:   "="    #eq
 	|  "*=" #muleq
 	|  "/=" #diveq
 	|  "%=" #modeq
@@ -120,7 +125,12 @@ assignment: `identifier` #variable
 	|  "^=" #xoreq
 	|  "|=" #ioreq
 	| "<<=" #lsheq
-	| ">>=" #rsheq) expression #expression '\n'+;
+	| ">>=" #rsheq
+	;
+
+assignment: `identifier` #variable assignment_operator #op expression #expression;
+
+assignments: assignment (';' assignment)* ';'? '\n'+;
 
 conditional:
 	"if" expression #conditional ':' '\n'+
@@ -140,7 +150,7 @@ print: "print" expression #expression '\n'+;
 
 statement
 	: recipe #recipe
-	| assignment #assignment
+	| assignments #assignments
 	| conditional #conditional
 	| iterative #iterative
 	| include #include

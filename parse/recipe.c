@@ -37,6 +37,8 @@ void evaluate_recipe_statement(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct recipe* lookup_or_create(char* target)
 	{
 		struct recipe* recipe = recipeset_lookup(all_recipes, target, dirfd);
@@ -138,6 +140,7 @@ void evaluate_recipe_statement(
 	}
 	
 	free(target);
+	#endif
 	
 	EXIT;
 }

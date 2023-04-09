@@ -23,6 +23,8 @@ void evaluate_statement(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (statement->recipe)
 	{
 		evaluate_recipe_statement(
@@ -74,6 +76,7 @@ void evaluate_statement(
 	{
 		TODO;
 	}
+	#endif
 	
 	EXIT;
 }
