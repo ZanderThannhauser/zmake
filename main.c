@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 #include <debug.h>
 
@@ -61,7 +62,7 @@ int main(int argc, char* const* argv)
 		{
 			struct cmdln_makefile_bundle* bundle = &cmdln_makefiles.data[i];
 			
-			struct dirfd* dirfd = new_dirfd(bundle->chdir);
+			struct dirfd* dirfd = new_dirfd(AT_FDCWD, bundle->chdir);
 			
 			struct scope* scope = new_scope();
 			

@@ -1,1 +1,1 @@
-bin/release-build/./memory/smemdup.o: memory/smemdup.c
+bin/release-build/memory/smemdup.o: memory/smemdup.c

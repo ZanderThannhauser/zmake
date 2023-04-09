@@ -1,1 +1,1 @@
-bin/release-build/./debug.o: debug.c
+bin/release-build/debug.o: debug.c

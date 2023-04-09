@@ -17,6 +17,7 @@
 #include "new.h"
 
 struct dirfd* new_dirfd(
+	int dirfd,
 	const char* path)
 {
 	ENTER;
@@ -25,7 +26,7 @@ struct dirfd* new_dirfd(
 	
 	struct dirfd* this = smalloc(sizeof(*this));
 	
-	this->fd = open(path, O_PATH);
+	this->fd = openat(dirfd, path, O_PATH);
 	
 	if (this->fd < 0)
 	{

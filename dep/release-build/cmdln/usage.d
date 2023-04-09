@@ -1,1 +1,1 @@
-bin/release-build/./cmdln/usage.o: cmdln/usage.c
+bin/release-build/cmdln/usage.o: cmdln/usage.c

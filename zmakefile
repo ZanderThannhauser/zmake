@@ -1,0 +1,75 @@
+
+cc = "gcc"
+
+cppflags = ["-I", "."]
+cppflags += ["-D", "_GNU_SOURCE"]
+
+cflags = ["-Wall", "-Werror"]
+
+ldlibs = ["-lgmp", "-lgdbm"]
+
+srcs = []
+
+srclist.md:
+	$ find -name '*.c' | sed 's#^./#srcs += "#g;s#$#"#g' > srclist.md
+
+include srclist.md
+
+buildprefix = "bin/release-build/"
+depprefix   = "dep/release-build/"
+
+objs = []
+deps = []
+dirs = {}
+for src in srcs:
+	objdir = buildprefix + dir(src); obj = buildprefix + basename(src) + '.o'
+	depdir = depprefix   + dir(src); dep = depprefix   + basename(src) + '.d'
+	(obj) (dep): (src) | (objdir) (depdir)
+		$ (cc) -c (cppflags) (cflags) (src) -MMD -MF (dep) -o (obj)
+	dirs += objdir; objs += obj
+	dirs += depdir; deps += dep
+end
+
+for x in dirs:
+	(x):
+		$ mkdir -p (x)
+		$ touch (x)
+end
+
+args = []
+
+# args += "--help"
+args += "--verbose"
+# args += "--print-dependency-tree"
+
+args += ["-C", "examples/abcdefg"]
+
+executable = buildprefix + "zmake"
+
+default: (executable)
+
+run: (executable)
+	$ (executable) (args)
+
+prefix = "/home/zander/bin/"
+
+install: (executable)
+	$ mkdir -vp (prefix)
+	$ cp -vau (executable) (prefix + executable)
+
+(executable): (objs)
+	$ (cc) (objs) (ldlibs) -o (executable)
+
+include (deps)
+
+
+
+
+
+
+
+
+
+
+
+

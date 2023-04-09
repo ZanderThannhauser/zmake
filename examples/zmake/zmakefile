@@ -11,14 +11,9 @@ ldlibs = ["-lgmp", "-lgdbm"]
 srcs = []
 
 /tmp/srclist.md:
-	$ find -name '*.c' | sed 's@^./@srcs += "@g;s@$@"@g' > /tmp/srclist.md
+	$ find -name '*.c' | sed 's#^./#srcs += "#g;s#$#"#g' > /tmp/srclist.md
 
 include /tmp/srclist.md
-
-/tmp/whatever:
-	$ touch /tmp/whatever
-
-default: /tmp/whatever
 
 objs = []
 deps = []

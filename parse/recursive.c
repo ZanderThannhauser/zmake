@@ -9,6 +9,10 @@
 
 #include <debug.h>
 
+#include <defines/argv0.h>
+
+#include <enums/error.h>
+
 #include <dirfd/struct.h>
 #include <dirfd/new.h>
 #include <dirfd/inc.h>
@@ -42,7 +46,7 @@ void recursive_parse(
 		
 		dpvs(dirname);
 		
-		new_local_dirfd = new_dirfd(dirname);
+		new_local_dirfd = new_dirfd(local_dirfd->fd, dirname);
 		
 		filename = slash + 1;
 	}
@@ -58,8 +62,8 @@ void recursive_parse(
 	
 	if (fd < 0)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "%s: cannot open(\"%s\"): %m\n", argv0, path);
+		exit(e_syscall_failed);
 	}
 	
 	FILE* stream = fdopen(fd, "r");
