@@ -97,7 +97,6 @@ void run_make_loop(
 		void callback(struct recipe* recipe)
 		{
 			if (true
-				&& recipe->execution.marked
 				&& recipe->execution.round == execution_round_id
 				&& !recipe->execution.waiting)
 			{
@@ -165,7 +164,7 @@ void run_make_loop(
 						recipeset_foreach(recipe->dep_of, ({
 							void callback(struct recipe* dep)
 							{
-								if (dep->execution.marked && !--dep->execution.waiting)
+								if (!--dep->execution.waiting)
 								{
 									heap_push(ready, dep);
 								}
@@ -242,7 +241,6 @@ void run_make_loop(
 					void callback(struct recipe* dep)
 					{
 						if (true
-							&& dep->execution.marked
 							&& dep->execution.round == execution_round_id
 							&& !--dep->execution.waiting)
 						{
@@ -283,21 +281,23 @@ void run_make_loop(
 	}
 	
 	#ifndef RELEASE
-	recipeset_foreach(all_recipes, ({
-		void callback(struct recipe* recipe)
-		{
-			if (true
-				&& recipe->execution.marked
-				&& recipe->execution.round == execution_round_id
-				&& recipe->execution.waiting)
+	if (!shutdown)
+	{
+		recipeset_foreach(all_recipes, ({
+			void callback(struct recipe* recipe)
 			{
-				fprintf(stderr, "!! internal error: target '%s' should have "
-					"built but didn't! (waiting == %u)!!\n",
-					recipe->target, recipe->execution.waiting);
+				if (true
+					&& recipe->execution.round == execution_round_id
+					&& recipe->execution.waiting)
+				{
+					fprintf(stderr, "!! internal error: target '%s' should have "
+						"built but didn't! (waiting == %u)!!\n",
+						recipe->target, recipe->execution.waiting);
+				}
 			}
-		}
-		callback;
-	}));
+			callback;
+		}));
+	}
 	#endif
 	
 	free_heap(ready);

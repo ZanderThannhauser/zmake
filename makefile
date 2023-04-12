@@ -3,9 +3,7 @@ CPPFLAGS += -D _GNU_SOURCE
 CPPFLAGS += -I .
 
 CFLAGS += -Wall -Werror -Wfatal-errors
-CFLAGS += -Wno-unused-result
 
-LDLIBS += -lm
 LDLIBS += -lgmp
 LDLIBS += -lgdbm
 
@@ -69,14 +67,14 @@ ARGS += --jobs 1
 #ARGS += -C examples/sandbox
 #ARGS += -C examples/sandbox /tmp/whatever
 
-ARGS += -C examples/abcdefg
+#ARGS += -C examples/abcdefg
 #ARGS += -C examples/abcdefg a b
 #ARGS += -C examples/abcdefg c
 
 #ARGS += -C examples/sleep
 #ARGS += -C examples/sleep 1
 
-#ARGS += -f ./examples/zmake/makefile
+ARGS += -f ./zmakefile
 
 run: $(buildprefix)/zmake
 	$< $(ARGS)

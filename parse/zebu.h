@@ -67,6 +67,7 @@ struct zebu_token* ioreq;
 struct zebu_token* lsheq;
 struct zebu_token* modeq;
 struct zebu_token* muleq;
+struct zebu_token* opteq;
 struct zebu_token* rsheq;
 struct zebu_token* subeq;
 struct zebu_token* xoreq;

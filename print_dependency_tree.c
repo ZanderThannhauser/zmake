@@ -48,7 +48,7 @@ void print_dependency_tree(
 			"",
 			target, dirfd,
 			target,
-			recipe->execution.round == execution_round_id && recipe->execution.marked ? 2 : 1);
+			recipe->execution.round == execution_round_id ? 2 : 1);
 			
 			recipeset_foreach(recipe->dep_on, ({
 				void callback(struct recipe* dependency)

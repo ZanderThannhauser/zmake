@@ -22,7 +22,6 @@ struct recipe
 	
 	struct {
 		unsigned round;
-		bool marked;
 		unsigned waiting;
 	} execution;
 	

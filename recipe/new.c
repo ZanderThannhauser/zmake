@@ -32,7 +32,6 @@ struct recipe* new_recipe(
 	this->circular.visited = false;
 	
 	this->execution.round = 0;
-	this->execution.marked = false;
 	
 	this->commands = NULL;
 	

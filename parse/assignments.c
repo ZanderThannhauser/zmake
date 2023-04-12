@@ -46,6 +46,18 @@ void evaluate_assignments_statement(
 				printf("%s = ", name), value_print(right), puts("");
 			}
 		}
+		else if (op->opteq)
+		{
+			struct value* left = scope_lookup(scope, name);
+			
+			if (!left)
+			{
+				scope_assign(scope, name, right);
+				printf("%s = ", name), value_print(right), puts("");
+			}
+			
+			free_value(left);
+		}
 		else if (op->addeq)
 		{
 			struct value* left = scope_lookup(scope, name);

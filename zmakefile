@@ -1,12 +1,52 @@
 
 cc = "gcc"
 
-cppflags = ["-I", "."]
+cppflags = []
 cppflags += ["-D", "_GNU_SOURCE"]
+cppflags += ["-I", "."]
 
-cflags = ["-Wall", "-Werror"]
+cflags = ["-Wall", "-Werror", "-Wfatal-errors"]
+cflags += ["-Wno-unused-result"]
+
+ldflags = [];
 
 ldlibs = ["-lgmp", "-lgdbm"]
+
+buildtype ?= "release"
+#buildtype ?= "test"
+#buildtype ?= "debug"
+
+if buildtype == "release":
+	cppflags += ["-D", "RELEASE"]
+	cflags += "-O2"
+	cflags += "-flto"
+	ldflags += "-flto=auto"
+	ldflags += "-static"
+else:
+	if buildtype == "test":
+		cppflags += ["-D", "TESTING"]
+		cflags += "-g"
+		cflags += "-Wno-unused-variable"
+		cflags += "-Wno-unused-function"
+		cflags += "-Wno-unused-but-set-variable"
+		cflags += "-Wno-unused-label"
+	else:
+		if buildtype == "debug":
+			cppflags += ["-D", "DEBUGGING", "-D", "ZEBU_DEBUG"]
+			cflags += "-g"
+			cflags += "-Wno-unused-variable"
+			cflags += "-Wno-unused-function"
+			cflags += "-Wno-unused-but-set-variable"
+			cflags += "-Wno-unused-label"
+		else:
+			print "invalid buildtype!"
+			x = 0 / 0
+		end
+	end
+end
+
+buildprefix = "bin/" + buildtype + "-build/"
+depprefix   = "dep/" + buildtype + "-build/"
 
 srcs = []
 
@@ -14,9 +54,6 @@ srclist.md:
 	$ find -name '*.c' | sort -V | sed 's#^./#srcs += "#g;s#$#"#g' > srclist.md
 
 include srclist.md
-
-buildprefix = "bin/zmake-build/"
-depprefix   = "dep/zmake-build/"
 
 objs = []
 deps = []
@@ -58,7 +95,7 @@ install: (executable)
 	$ cp -vau (executable) (prefix + executable)
 
 (executable): (objs)
-	$ (cc) (objs) (ldlibs) -o (executable)
+	$ (cc) (ldflags) (objs) (ldlibs) -o (executable)
 
 include (deps)
 

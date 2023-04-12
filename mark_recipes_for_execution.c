@@ -8,7 +8,7 @@
 #include <heap/free.h>
 
 #include <recipeset/foreach.h>
-/*#include <recipeset/len.h>*/
+#include <recipeset/len.h>
 
 #include <recipe/struct.h>
 #include <recipe/compare_scores.h>
@@ -37,21 +37,16 @@ void mark_recipes_for_execution(
 	{
 		struct recipe* recipe = heap_pop(ready);
 		
-		if (!recipe->execution.marked)
+		if (recipe->execution.round < execution_round_id)
 		{
 			dpvs(recipe->target);
 			
-			// also handle ordered-only dependencies
-			recipe->execution.marked = true;
 			recipe->execution.round = execution_round_id;
-			recipe->execution.waiting = 0;
+			recipe->execution.waiting = recipeset_len(recipe->dep_on) + recipeset_len(recipe->odep_on);
 			
 			recipeset_foreach(recipe->dep_on, ({
 				void callback(struct recipe* dependency) {
 					heap_push(ready, dependency);
-					
-					if (!dependency->execution.marked)
-						recipe->execution.waiting++;
 				}
 				callback;
 			}));
@@ -59,9 +54,6 @@ void mark_recipes_for_execution(
 			recipeset_foreach(recipe->odep_on, ({
 				void callback(struct recipe* dependency) {
 					heap_push(ready, dependency);
-					
-					if (!dependency->execution.marked)
-						recipe->execution.waiting++;
 				}
 				callback;
 			}));

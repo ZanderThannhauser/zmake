@@ -1,11 +1,16 @@
 
+#include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
 
+#include <enums/error.h>
+
 #include <parse/zebu.h>
 
 #include <scope/lookup.h>
+
+#include <defines/argv0.h>
 
 #include "functions/basename.h"
 #include "functions/dir.h"
@@ -31,9 +36,14 @@ struct value* evaluate_primary_expression(
 	{
 		const char* name = (char*) expression->variable->data;
 		
-		dpvs(name);
-		
 		result = scope_lookup(scope, name);
+		
+		if (!result)
+		{
+			fprintf(stderr, "%s: use of undefined variable "
+				"'%s' on line %u!\n", argv0, name, expression->startline);
+			exit(e_undefined_variable);
+		}
 	}
 	else if (expression->integer)
 	{

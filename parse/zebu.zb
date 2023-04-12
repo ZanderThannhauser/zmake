@@ -112,6 +112,7 @@ conditional_expression
 
 assignment_operator
 	:   "="    #eq
+	|  "?=" #opteq
 	|  "*=" #muleq
 	|  "/=" #diveq
 	|  "%=" #modeq

@@ -39,15 +39,12 @@ void evaluate_statement(
 	}
 	else if (statement->conditional)
 	{
-		TODO;
-		#if 0
 		evaluate_conditional_statement(
 			statement->conditional,
 			all_recipes, propagate_ftimes,
 			database,
 			absolute_dirfd, local_dirfd,
 			scope);
-		#endif
 	}
 	else if (statement->iterative)
 	{
@@ -69,12 +66,9 @@ void evaluate_statement(
 	}
 	else if (statement->print)
 	{
-		TODO;
-		#if 0
 		evaluate_print_statement(
 			statement->print,
 			scope);
-		#endif
 	}
 	else
 	{
