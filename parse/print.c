@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <value/print.h>
@@ -20,6 +22,9 @@ void evaluate_print_statement(
 	value_print(result), puts("");
 	
 	free_value(result);
+	
+	if (print->error)
+		exit(1);
 	
 	EXIT;
 }

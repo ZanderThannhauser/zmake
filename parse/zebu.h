@@ -253,6 +253,7 @@ unsigned startline, endline;
 
 struct zebu_print
 {
+struct zebu_token* error;
 struct zebu_expression* expression;
 unsigned refcount;
 unsigned startline, endline;

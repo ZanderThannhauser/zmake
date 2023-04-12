@@ -52,6 +52,9 @@ void evaluate_conditional_statement(
 	}
 	else
 	{
+		// attempt to match other cases before failing to the else
+		TODO;
+		
 		for (unsigned i = 0, n = conditional->falsecase.n; i < n; i++)
 		{
 			struct zebu_statement* statement = conditional->falsecase.data[i];

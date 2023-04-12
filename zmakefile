@@ -18,31 +18,30 @@ buildtype ?= "release"
 
 if buildtype == "release":
 	cppflags += ["-D", "RELEASE"]
+	
 	cflags += "-O2"
 	cflags += "-flto"
+	
 	ldflags += "-flto=auto"
 	ldflags += "-static"
+elif buildtype == "test":
+	cppflags += ["-D", "TESTING"]
+	
+	cflags += "-g"
+	cflags += "-Wno-unused-variable"
+	cflags += "-Wno-unused-function"
+	cflags += "-Wno-unused-but-set-variable"
+	cflags += "-Wno-unused-label"
+elif buildtype == "debug":
+	cppflags += ["-D", "DEBUGGING", "-D", "ZEBU_DEBUG"]
+	
+	cflags += "-g"
+	cflags += "-Wno-unused-variable"
+	cflags += "-Wno-unused-function"
+	cflags += "-Wno-unused-but-set-variable"
+	cflags += "-Wno-unused-label"
 else:
-	if buildtype == "test":
-		cppflags += ["-D", "TESTING"]
-		cflags += "-g"
-		cflags += "-Wno-unused-variable"
-		cflags += "-Wno-unused-function"
-		cflags += "-Wno-unused-but-set-variable"
-		cflags += "-Wno-unused-label"
-	else:
-		if buildtype == "debug":
-			cppflags += ["-D", "DEBUGGING", "-D", "ZEBU_DEBUG"]
-			cflags += "-g"
-			cflags += "-Wno-unused-variable"
-			cflags += "-Wno-unused-function"
-			cflags += "-Wno-unused-but-set-variable"
-			cflags += "-Wno-unused-label"
-		else:
-			print "invalid buildtype!"
-			x = 0 / 0
-		end
-	end
+	error "invalid buildtype!"
 end
 
 buildprefix = "bin/" + buildtype + "-build/"

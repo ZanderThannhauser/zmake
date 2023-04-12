@@ -141,6 +141,8 @@ assignments
 conditional:
 	"if" expression #conditional ':' '\n'*
 		(statement #truecase[])+
+	("elif" expression ':' '\n'*
+		statement+)*
 	("else" ":" '\n'?
 		(statement #falsecase[])+)?
 	"end" '\n'+;
@@ -152,7 +154,7 @@ iterative:
 
 include: "include" argument #argument ';'? '\n'+;
 
-print: "print" expression #expression ';'? '\n'+;
+print: ("print" | "error" #error) expression #expression ';'? '\n'+;
 
 statement
 	: recipe #recipe
