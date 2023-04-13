@@ -53,7 +53,11 @@ void evaluate_assignments_statement(
 			if (!left)
 			{
 				scope_assign(scope, name, right);
-				printf("%s = ", name), value_print(right), puts("");
+				
+				if (cmdln_verbose)
+				{
+					printf("%s = ", name), value_print(right), puts("");
+				}
 			}
 			
 			free_value(left);

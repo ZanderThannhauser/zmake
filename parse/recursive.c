@@ -19,7 +19,7 @@
 #include <dirfd/free.h>
 
 #include "zebu.h"
-#include "statement.h"
+#include "statements.h"
 #include "recursive.h"
 
 void recursive_parse(
@@ -78,17 +78,12 @@ void recursive_parse(
 	
 	struct zebu_root* root = start->root;
 	
-	for (unsigned i = 0, n = root->statements.n; i < n; i++)
-	{
-		struct zebu_statement* statement = root->statements.data[i];
-		
-		evaluate_statement(
-			statement,
-			all_recipes, propagate_ftimes,
-			database,
-			absolute_dirfd, new_local_dirfd,
-			scope);
-	}
+	evaluate_statements(
+		root->statements,
+		all_recipes, propagate_ftimes,
+		database,
+		absolute_dirfd, new_local_dirfd,
+		scope);
 	
 	free_dirfd(new_local_dirfd);
 	

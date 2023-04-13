@@ -12,7 +12,7 @@
 #include <value/free.h>
 
 #include "evaluate/root.h"
-#include "statement.h"
+#include "statements.h"
 #include "conditional.h"
 
 void evaluate_conditional_statement(
@@ -26,49 +26,42 @@ void evaluate_conditional_statement(
 {
 	ENTER;
 	
-	struct value* gcond = evaluate_expression(conditional->conditional, scope);
-	
-	if (gcond->kind != vk_boolean)
+	bool found = false;
+	for (unsigned i = 0, n = conditional->conditionals.n; !found && i < n; i++)
 	{
-		TODO;
-		exit(1);
-	}
-	
-	struct boolean_value* cond = (void*) gcond;
-	
-	if (cond->value)
-	{
-		for (unsigned i = 0, n = conditional->truecase.n; i < n; i++)
-		{
-			struct zebu_statement* statement = conditional->truecase.data[i];
-			
-			evaluate_statement(
-				statement,
-				all_recipes, propagate_ftimes,
-				database,
-				absolute_dirfd, local_dirfd,
-				scope);
-		}
-	}
-	else
-	{
-		// attempt to match other cases before failing to the else
-		TODO;
+		struct value* gcond = evaluate_expression(conditional->conditionals.data[i], scope);
 		
-		for (unsigned i = 0, n = conditional->falsecase.n; i < n; i++)
+		if (gcond->kind != vk_boolean)
 		{
-			struct zebu_statement* statement = conditional->falsecase.data[i];
-			
-			evaluate_statement(
-				statement,
+			TODO;
+			exit(1);
+		}
+		
+		struct boolean_value* cond = (void*) gcond;
+		
+		if (cond->value)
+		{
+			evaluate_statements(
+				conditional->cases.data[i],
 				all_recipes, propagate_ftimes,
 				database,
 				absolute_dirfd, local_dirfd,
 				scope);
+			found = true;
 		}
+		
+		free_value(gcond);
 	}
 	
-	free_value(gcond);
+	if (!found && conditional->fallback)
+	{
+		evaluate_statements(
+			conditional->fallback,
+			all_recipes, propagate_ftimes,
+			database,
+			absolute_dirfd, local_dirfd,
+			scope);
+	}
 	
 	EXIT;
 }

@@ -12,7 +12,7 @@
 #include <value/set/foreach.h>
 
 #include "evaluate/root.h"
-#include "statement.h"
+#include "statements.h"
 #include "iterative.h"
 #include "zebu.h"
 
@@ -37,19 +37,14 @@ void evaluate_iterative_statement(
 		
 		scope_assign(scope, variable, element);
 		
-		for (unsigned j = 0, m = iterative->body.n; j < m; j++)
-		{
-			struct zebu_statement* statement = iterative->body.data[j];
-			
-			evaluate_statement(
-				/* struct zebu_statement* */ statement,
-				/* struct recipeset* */ all_recipes,
-				/* struct recipeset* */ propagate_ftimes,
-				/* struct database* */ database,
-				/* struct dirfd* */ absolute_dirfd,
-				/* struct dirfd* */ local_dirfd,
-				/* struct scope* */ scope);
-		}
+		evaluate_statements(
+			/* struct zebu_statement* */ iterative->body,
+			/* struct recipeset* */ all_recipes,
+			/* struct recipeset* */ propagate_ftimes,
+			/* struct database* */ database,
+			/* struct dirfd* */ absolute_dirfd,
+			/* struct dirfd* */ local_dirfd,
+			/* struct scope* */ scope);
 		
 		EXIT;
 	}

@@ -109,15 +109,15 @@ unsigned startline, endline;
 
 struct zebu_conditional
 {
-struct zebu_expression* conditional;
 struct {
-struct zebu_statement** data;
+struct zebu_statements** data;
 unsigned n, cap;
-} falsecase;
+} cases;
 struct {
-struct zebu_statement** data;
+struct zebu_expression** data;
 unsigned n, cap;
-} truecase;
+} conditionals;
+struct zebu_statements* fallback;
 unsigned refcount;
 unsigned startline, endline;
 };
@@ -176,10 +176,7 @@ unsigned startline, endline;
 
 struct zebu_iterative
 {
-struct {
-struct zebu_statement** data;
-unsigned n, cap;
-} body;
+struct zebu_statements* body;
 struct zebu_expression* list;
 struct zebu_token* variable;
 unsigned refcount;
@@ -255,6 +252,7 @@ struct zebu_print
 {
 struct zebu_token* error;
 struct zebu_expression* expression;
+struct zebu_token* print;
 unsigned refcount;
 unsigned startline, endline;
 };
@@ -293,10 +291,7 @@ unsigned startline, endline;
 
 struct zebu_root
 {
-struct {
-struct zebu_statement** data;
-unsigned n, cap;
-} statements;
+struct zebu_statements* statements;
 unsigned refcount;
 unsigned startline, endline;
 };
@@ -334,6 +329,16 @@ unsigned refcount;
 unsigned startline, endline;
 };
 
+struct zebu_statements
+{
+struct {
+struct zebu_statement** data;
+unsigned n, cap;
+} statements;
+unsigned refcount;
+unsigned startline, endline;
+};
+
 
 
 extern struct zebu_token* inc_zebu_token(struct zebu_token* token);
@@ -367,6 +372,7 @@ extern struct zebu_root* inc_zebu_root(struct zebu_root* ptree);
 extern struct zebu_shift_expression* inc_zebu_shift_expression(struct zebu_shift_expression* ptree);
 extern struct zebu_simple_command* inc_zebu_simple_command(struct zebu_simple_command* ptree);
 extern struct zebu_statement* inc_zebu_statement(struct zebu_statement* ptree);
+extern struct zebu_statements* inc_zebu_statements(struct zebu_statements* ptree);
 
 
 extern void free_zebu_token(struct zebu_token* token);
@@ -429,6 +435,8 @@ extern void free_zebu_shift_expression(struct zebu_shift_expression* ptree);
 extern void free_zebu_simple_command(struct zebu_simple_command* ptree);
 
 extern void free_zebu_statement(struct zebu_statement* ptree);
+
+extern void free_zebu_statements(struct zebu_statements* ptree);
 
 
 

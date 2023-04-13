@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
@@ -23,8 +24,14 @@ void evaluate_print_statement(
 	
 	free_value(result);
 	
-	if (print->error)
+	if (print->print)
+		;
+	else if (print->error)
 		exit(1);
+	else
+	{
+		TODO;
+	}
 	
 	EXIT;
 }

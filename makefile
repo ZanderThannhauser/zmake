@@ -3,6 +3,7 @@ CPPFLAGS += -D _GNU_SOURCE
 CPPFLAGS += -I .
 
 CFLAGS += -Wall -Werror -Wfatal-errors
+CFLAGS += -Wno-unused-result
 
 LDLIBS += -lgmp
 LDLIBS += -lgdbm

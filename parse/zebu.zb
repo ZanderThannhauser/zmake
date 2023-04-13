@@ -139,22 +139,22 @@ assignments
 	;
 
 conditional:
-	"if" expression #conditional ':' '\n'*
-		(statement #truecase[])+
-	("elif" expression ':' '\n'*
-		statement+)*
+	"if" expression #conditionals[] ':' '\n'*
+		statements #cases[]
+	("elif" expression #conditionals[] ':' '\n'*
+		statements #cases[])*
 	("else" ":" '\n'?
-		(statement #falsecase[])+)?
+		statements #fallback)?
 	"end" '\n'+;
 
 iterative:
 	"for" `identifier` #variable "in" expression #list ':' '\n'
-		(statement #body[])+
+		statements #body
 	"end" '\n'+;
 
 include: "include" argument #argument ';'? '\n'+;
 
-print: ("print" | "error" #error) expression #expression ';'? '\n'+;
+print: ("print" #print | "error" #error) expression #expression ';'? '\n'+;
 
 statement
 	: recipe #recipe
@@ -165,7 +165,9 @@ statement
 	| print #print
 	;
 
-root: '\n'* (statement #statements[])+;
+statements: (statement #statements[])+;
+
+root: '\n'* statements #statements;
 
 %start: root #root;
 
