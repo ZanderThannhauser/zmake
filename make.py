@@ -113,7 +113,7 @@ def make(start_targets):
         elif element.should_rebuild():
             assert(element.command);
             if element.message is not None:
-                print("\033[33m" f"  {element.message}" "\033[0m");
+                print("\033[33m" f"{element.message}" "\033[0m");
             else:
                 print("\033[33m" f"$ {' '.join(element.command)}" "\033[0m");
             result = subprocess.run(element.command);
@@ -187,6 +187,7 @@ directories = set();
 dependency_files = list();
 objects = list();
 
+# C files and assembly files build object files and dependency files:
 for src in glob("**/*.[cS]", recursive = True):
     if all(ignore not in src for ignore in ignorepaths):
         obj = buildprefix + "/" + src[:-2] + ".o";
@@ -206,15 +207,14 @@ for src in glob("**/*.[cS]", recursive = True):
         recipe(dep).add_dep(recipe(directory), order_only = True);
         directories.add(directory);
     
-for directory in directories:
-    recipe(directory).command = ["mkdir", directory, "-p"];
-
+# link all of the objects together into an executable:
 executable = buildprefix + "/" + "main";
 for obj in objects: recipe(executable).add_dep(recipe(obj));
 recipe(executable).message = f"linking {executable}";
 recipe(executable).command = [cc, *ldflags, *objects, *ldlibs, "-o", executable];
 
-args = ["-j1", "-f", "makefile"];
+
+args = ["-j1", "-f", "zmakefile"];
 #args = ["--help"];
 
 recipe("run").add_dep(recipe(executable));
@@ -225,6 +225,29 @@ recipe("valrun").command = ["valgrind", executable, *args];
 
 recipe("install").add_dep(recipe(executable));
 recipe("install").command = ["cp", "-avu", executable, environ.get("HOME", "/") + "/bin/zmake"];
+
+
+# tests are done by scripts in tests/
+for test in glob("tests/**/*.sh", recursive = True):
+    touch = buildprefix + "/" + test[:-3] + ".touch";
+    
+    recipe(touch).add_dep(recipe(test));
+    recipe(touch).add_dep(recipe(executable));
+    recipe(touch).message = f"running test {test}";
+    recipe(touch).command = ["bash", test, executable, touch];
+    recipe("test").add_dep(recipe(touch));
+    
+    directory = touch[:touch.rindex("/")];
+    recipe(touch).add_dep(recipe(directory), order_only = True);
+    directories.add(directory);
+
+recipe("test").message = "all tests succeeded!";
+recipe("test").command = ["touch", f"test"];
+
+
+for directory in directories:
+    recipe(directory).command = ["mkdir", directory, "-p"];
+
 
 # build and read the dependency files before considering the executable:
 make(dependency_files);

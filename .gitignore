@@ -7,3 +7,4 @@ dep/zmake-build/
 examples/sandbox
 -junk
 srclist.*
+test
