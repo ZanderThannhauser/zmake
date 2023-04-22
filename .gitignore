@@ -1,7 +1,9 @@
 bin/
 build/
+dep/
 dep/zmake-build/
 *.db
 *.dot
 examples/sandbox
 -junk
+srclist.*

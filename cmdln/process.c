@@ -24,6 +24,7 @@
 #include "usage.h"
 #include "process.h"
 
+#if 0
 static void append_chdir(const char* chdir)
 {
 	ENTER;
@@ -85,11 +86,14 @@ static void append_makefile(unsigned index, const char* makefile)
 	
 	EXIT;
 }
+#endif
 
 void cmdln_process(int argc, char* const* argv)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	for (int i = 1; i < argc;)
 	{
 		char* arg = argv[i++];
@@ -232,6 +236,7 @@ void cmdln_process(int argc, char* const* argv)
 		if (!cmdln_makefiles.data[i].targets.n)
 			append_target(i, "default");
 	}
+	#endif
 	
 	EXIT;
 }

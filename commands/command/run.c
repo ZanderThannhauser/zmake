@@ -25,6 +25,9 @@ bool command_run(
 	bool error = false;
 	ENTER;
 	
+	puts("todo: pipe2!");
+	error = true;
+	#if 0
 	unsigned i, n = this->simples.n, fd;
 	
 	int (*pipes)[n-1][2] = smalloc(sizeof(*pipes));
@@ -156,6 +159,7 @@ bool command_run(
 	free(children);
 	
 	free(pipes);
+	#endif
 	
 	EXIT;
 	return error;

@@ -1,4 +1,6 @@
 
+#include <gmp.h>
+
 #include <debug.h>
 
 #include "../new.h"

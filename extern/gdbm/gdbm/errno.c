@@ -1,0 +1,2 @@
+
+int gdbm_errno;

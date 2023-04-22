@@ -1,4 +1,8 @@
 
+#include <assert.h>
+#include <string.h>
+#include <limits.h>
+
 #include <debug.h>
 
 #include "resolve.h"
@@ -30,5 +34,6 @@ struct path* resolve_path(
 	TODO;
 	
 	EXIT;
+	return moving;
 }
 

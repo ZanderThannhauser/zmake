@@ -1,5 +1,19 @@
 
-#ifndef RELEASE
+#if (defined RELEASE || defined TESTING)
+	
+	#define TODO assert(!"TODO");
+	#define CHECK assert(!"CHECK");
+	#define NOPE assert(!"NOPE");
+	
+	#define ENTER ;
+	#define EXIT ;
+	
+	#define ddprintf(...) ;
+	#define dpvb(x) ;
+	#define dpv(x) ;
+	#define dpvs(x) ;
+	#define dpvc(x) ;
+#else
 	#include <assert.h>
 	#include <stdio.h>
 	#include <dirent.h>
@@ -231,19 +245,6 @@
 		#define HERE ;
 		#define EXIT
 	#endif
-#else
-	#define TODO assert(!"TODO");
-	#define CHECK assert(!"CHECK");
-	#define NOPE assert(!"NOPE");
-	
-	#define ENTER ;
-	#define EXIT ;
-	
-	#define ddprintf(...) ;
-	#define dpvb(x) ;
-	#define dpv(x) ;
-	#define dpvs(x) ;
-	#define dpvc(x) ;
 #endif
 
 

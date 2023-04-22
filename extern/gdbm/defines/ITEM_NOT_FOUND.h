@@ -1,0 +1,3 @@
+
+# define GDBM_ITEM_NOT_FOUND 15
+

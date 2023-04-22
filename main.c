@@ -48,6 +48,9 @@ int main(int argc, char* const* argv)
 {
 	ENTER;
 	
+	puts("hello, world!");
+	
+	#if 0
 	cmdln_process(argc, argv);
 	
 	if (cmdln_help)
@@ -138,6 +141,7 @@ int main(int argc, char* const* argv)
 	}
 	
 	cmdln_free();
+	#endif
 	
 	EXIT;
 	return 0;

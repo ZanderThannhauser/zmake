@@ -1,4 +1,6 @@
 
+#include <time.h>
+
 struct gdbm_file_info;
 
 struct database

@@ -6,7 +6,7 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <linux/wait.h>
+/*#include <linux/wait.h>*/
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
@@ -43,6 +43,7 @@
 #include "mark_recipes_for_execution.h"
 #include "run_make_loop.h"
 
+#if 0
 static bool recipe_should_be_run(
 	struct dirfd* dirfd,
 	struct database* database,
@@ -82,6 +83,7 @@ static bool recipe_should_be_run(
 	
 	return any;
 }
+#endif
 
 void run_make_loop(
 	struct recipeset* all_recipes,
@@ -89,6 +91,8 @@ void run_make_loop(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(execution_round_id);
 	
 	struct heap* ready = new_heap(compare_recipe_scores);
@@ -139,23 +143,27 @@ void run_make_loop(
 		// eventfd.unlock();
 	
 	// while (!shutdown && (running.n || heap_is_nonempty(ready))):
-		// finished select(running + ({eventfd} if len(ready) else {}));
-		// if eventfd in finished:
-			// assert(len(ready));
-			// task = ready.pop();
-			// if task should run:
-				// fork():
-					// commands.run();
-				// running.add(pid);
-			// else:
-				// unlock dependencies
-				// eventfd.unlock();
+		// finished = select(running + ({eventfd} if len(ready) else {}));
+		
 		// for pid in finished:
-			// check status code
-			// unlock dependencies
+			// if pid in running:
+				// waitpid()
+				// dependency stuff...
+			// elif pid == eventfd:
+				// if eventfd.lock(nonblocking) == 0:
+					// assert(len(ready));
+					// task = ready.pop();
+					// fork():
+						// task.run_commands();
+					// running.add(pid);
+				// elif errno == EAGAIN:
+					// someone else got it
+				// else:
+					// error!
+				
 	
 	// for i in range(len(cmdln.jobs)):
-		// eventfd.lock();
+		// eventfd.lock(blocking);
 	
 	// eventfd.close();
 	
@@ -330,6 +338,7 @@ void run_make_loop(
 	#endif
 	
 	free_heap(ready);
+	#endif
 	
 	EXIT;
 }
