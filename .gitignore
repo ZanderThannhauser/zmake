@@ -1,4 +1,5 @@
 bin/
+build/
 dep/zmake-build/
 *.db
 *.dot

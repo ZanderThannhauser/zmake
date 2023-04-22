@@ -130,6 +130,35 @@ void run_make_loop(
 	
 	struct recipe* fd_to_recipe[FD_SETSIZE] = {};
 	
+	// if shared:
+		// eventfd = pidfd_getfd();
+	// else:
+		// eventfd = new_eventfd(0);
+	
+	// for i in range(len(cmdln.jobs)):
+		// eventfd.unlock();
+	
+	// while (!shutdown && (running.n || heap_is_nonempty(ready))):
+		// finished select(running + ({eventfd} if len(ready) else {}));
+		// if eventfd in finished:
+			// assert(len(ready));
+			// task = ready.pop();
+			// if task should run:
+				// fork():
+					// commands.run();
+				// running.add(pid);
+			// else:
+				// unlock dependencies
+				// eventfd.unlock();
+		// for pid in finished:
+			// check status code
+			// unlock dependencies
+	
+	// for i in range(len(cmdln.jobs)):
+		// eventfd.lock();
+	
+	// eventfd.close();
+	
 	while (!shutdown && (running.n || heap_is_nonempty(ready)))
 	{
 		if (running.n)

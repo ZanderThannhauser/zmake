@@ -32,6 +32,10 @@
 #include <scope/assign_builtins.h>
 #include <scope/free.h>
 
+#include <path/new.h>
+#include <path/resolve.h>
+#include <path/free.h>
+
 #include <mark_recipes_for_execution.h>
 
 #include <print_dependency_tree.h>
@@ -58,6 +62,21 @@ int main(int argc, char* const* argv)
 		
 		struct recipeset* targets = new_recipeset(false);
 		
+		struct path* root_path = new_root_path();
+		
+		char cwd[PATH_MAX];
+		if (!getcwd(cwd, PATH_MAX))
+		{
+			TODO;
+			exit(1);
+		}
+		
+		dpvs(cwd);
+		
+		struct path* cwd_path = resolve_path(cwd, root_path, root_path);
+		
+		TODO;
+		#if 0
 		for (int i = 0, n = cmdln_makefiles.n; i < n; i++)
 		{
 			struct cmdln_makefile_bundle* bundle = &cmdln_makefiles.data[i];
@@ -115,6 +134,7 @@ int main(int argc, char* const* argv)
 		free_recipeset(targets);
 		
 		free_database(database);
+		#endif
 	}
 	
 	cmdln_free();
