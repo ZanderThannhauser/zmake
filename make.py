@@ -223,6 +223,9 @@ recipe("run").command = [executable, *args];
 recipe("valrun").add_dep(recipe(executable));
 recipe("valrun").command = ["valgrind", executable, *args];
 
+recipe("install").add_dep(recipe(executable));
+recipe("install").command = ["cp", "-avu", executable, environ.get("HOME", "/") + "/bin/zmake"];
+
 # build and read the dependency files before considering the executable:
 make(dependency_files);
 for dependency_file in dependency_files:
